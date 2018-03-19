@@ -1,0 +1,20 @@
+動画ID: {{ movie.id }}<br>
+投稿日時: {{ movie.postdate }}<br>
+<script type="application/javascript" src="https://embed.nicovideo.jp/watch/{{ movie.id }}/script?w=720&h=480"></script><noscript><a href="http://www.nicovideo.jp/watch/{{ movie.id }}">リンク</a></noscript><br>
+エポック数: {{ movie.epoch }}<br>
+正当性: {{ movie.validity }}<br>
+完了: {{ movie.iscomplete }}<br>
+<br>
+再生数推移
+<ul>
+{% for chart_cell in chart %}
+<li> {{chart_cell.view}} </li>
+{% endfor %}
+</ul>
+<br>
+チェックポイント時タグ
+<ul>
+{% for tag_cell in tags %}
+<li> <a href="../../tag/{{tag_cell.tagname}}">{{tag_cell.tagname}}</a> </li>
+{% endfor %}
+</ul>

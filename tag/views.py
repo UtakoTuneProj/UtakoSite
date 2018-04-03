@@ -10,7 +10,7 @@ def index(request):
 
     page = request.GET.get('page')
     tags = paginator.get_page(page)
-    return render(request, 'tag/index.html', {'tags': tags, 'tags_list': tags_list})
+    return render(request, 'tag/index.html', {'tags': tags, 'tags_list': tags_list, 'page': tags})
 
 def detail(request, tagname):
     movies_list = get_list_or_404(Idtag, tagname=tagname)
@@ -18,4 +18,4 @@ def detail(request, tagname):
 
     page = request.GET.get('page')
     movies = paginator.get_page(page)
-    return render(request, 'tag/detail.html', { 'tagname': tagname, 'movies': movies })
+    return render(request, 'tag/detail.html', { 'tagname': tagname, 'movies': movies, 'page': movies})

@@ -9,7 +9,7 @@ def index(request):
 
     page = request.GET.get('page')
     movies = paginator.get_page(page)
-    return render(request, 'movie/index.html', {'movies': movies })
+    return render(request, 'movie/index.html', {'movies': movies, 'page': movies})
 
 def detail(request, movie_id):
     movie = get_object_or_404(Status, id=movie_id)

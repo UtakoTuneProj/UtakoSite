@@ -1,20 +1,14 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>動画一覧</h1>
+  <h1>動画一覧</h1>
+  {% include "paginator.html" %}
 
-{% for movie in movies %}
-  <iframe width="312" height="176" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
-  </iframe>
-  <a href="{{movie.id}}">{{movie.id}}</a><br>
-{% endfor %}
+  {% for movie in movies %}
+    <iframe width="312" height="176" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
+    </iframe>
+    <a href="{{movie.id}}">{{movie.id}}</a><br>
+  {% endfor %}
 
-{% if movies.has_previous %}
-  <a href="?page=1">&laquo; first</a>
-  <a href="?page={{ movies.previous_page_number }}">previous</a>
-{% endif %}
-Page{{ movies.number }} of {{movies.paginator.num_pages}}
-{% if movies.has_next %}
-  <a href="?page={{ movies.next_page_number }}">next</a>
-  <a href="?page={{ movies.paginator.num_pages }}">last &raquo;</a>
-{% endif %}
+  {% include "paginator.html" %}
 {% endblock content %}

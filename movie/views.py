@@ -4,7 +4,7 @@ from .models import Status, Chart, Idtag, Tagcolor
 
 # Create your views here.
 def index(request):
-    movies_list = Status.objects.all()
+    movies_list = Status.objects.all().order_by('postdate')
     paginator = Paginator(movies_list, 10)
 
     page = request.GET.get('page')

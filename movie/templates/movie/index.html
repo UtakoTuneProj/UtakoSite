@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 <h1>動画一覧</h1>
 
 {% for movie in movies %}
@@ -15,3 +17,4 @@ Page{{ movies.number }} of {{movies.paginator.num_pages}}
   <a href="?page={{ movies.next_page_number }}">next</a>
   <a href="?page={{ movies.paginator.num_pages }}">last &raquo;</a>
 {% endif %}
+{% endblock content %}

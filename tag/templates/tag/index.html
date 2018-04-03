@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 <h1>タグ一覧</h1>
 
 <ul>
@@ -17,3 +19,4 @@ Page{{ tags.number }} of {{tags.paginator.num_pages}}
   <a href="?page={{ tags.next_page_number }}">next</a>
   <a href="?page={{ tags.paginator.num_pages }}">last &raquo;</a>
 {% endif %}
+{% endblock content %}

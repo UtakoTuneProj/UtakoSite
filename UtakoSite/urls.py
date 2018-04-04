@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.flatpages import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('movie/', include('movie.urls')),
     path('tag/', include('tag.urls')),
+    path('pages/', include('django.contrib.flatpages.urls')),
 ]

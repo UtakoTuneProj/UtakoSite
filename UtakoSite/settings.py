@@ -54,7 +54,7 @@ ROOT_URLCONF = 'UtakoSite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['UtakoSite/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

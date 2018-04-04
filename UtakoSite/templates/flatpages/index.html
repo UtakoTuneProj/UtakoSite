@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+  <!-- Custom fonts for this template -->
+  <link href="{% static 'grayscale/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Cabin:700' rel='stylesheet' type='text/css'>
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'grayscale/css/grayscale.min.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block body %}
+  <!-- Intro Header -->
+  <header class="masthead">
+    <div class="intro-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <h1 class="brand-heading">UTAKO TUNES</h1>
+            <p class="intro-text">人工知能による、新しい音楽体験。</p>
+            <a href="#about" class="btn btn-circle js-scroll-trigger">
+              <i class="fa fa-angle-double-down animated"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- About Section -->
+  <section id="about" class="content-section text-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h2>Utakoとは</h2>
+          <p>Utako(折原詩子)は，<a href="http://www.nicovideo.jp/">ニコニコ動画</a>上のVOCALOID/UTAU楽曲を自動で解析することで音楽と音楽，そしてあなたを「繋げる」サービスです．</p>
+          <p>基幹技術として日本発のNeural Network Frameworkである<a href="https://chainer.org/">chainer</a>を採用．Convolutional Neural Networkにより楽曲そのものを「聞いて」解析します</p>
+          <p>ユーザーの行動からではなく，楽曲そのものにより楽曲推薦を行うため，まだ有名ではないけれども好みにあっている楽曲とも出会う可能性が高まります．</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download Section -->
+  <section id="download" class="download-section content-section text-center">
+    <div class="container">
+      <div class="col-lg-8 mx-auto">
+        <h2>はじめる</h2>
+        <p>登録不要．好きな楽曲のIDを入力するだけ．</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="content-section text-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h2>開発に参加する</h2>
+          <p>以下のリンクからお気軽にどうぞ．</p>
+          <ul class="list-inline banner-social-buttons">
+            <li class="list-inline-item">
+              <a href="https://twitter.com/town7_haruki" class="btn btn-default btn-lg">
+                <i class="fa fa-twitter fa-fw"></i>
+                <span class="network-name">Twitter</span>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="https://github.com/nanamachi/" class="btn btn-default btn-lg">
+                <i class="fa fa-github fa-fw"></i>
+                <span class="network-name">Github</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock body %}
+
+{% block extra_js %}
+  <!-- Plugin JavaScript -->
+  <script src="{% static 'grayscale/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="{% static 'grayscale/js/grayscale.min.js' %}"></script>
+{% endblock extra_js %}

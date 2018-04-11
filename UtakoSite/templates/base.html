@@ -9,6 +9,19 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
+    <nav class="navbar navbar-expand-sm justify-content-center bg-dark navbar-dark">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a href="/pages/index/" class='nav-link'>TOP</a>
+        </li>
+        <li class="nav-item">
+          <a href="/movie/" class='nav-link'>Movie</a>
+        </li>
+        <li class="nav-item">
+          <a href="/tag/" class='nav-link'>Tag</a>
+        </li>
+      </ul>
+    </nav>
     {% block body %}
     {{ content }}
     {% endblock %}

@@ -13,9 +13,9 @@ VOCALOID楽曲視聴支援サービス"UTAKO TUNE"のフロントエンド
 
 ## プロジェクトへの参加
 以下のアカウントのいずれかまでお気軽にご連絡ください
-- Twitter( [@town7_haruki][https://twitter.com/town7_haruki] )
-- mastodon( [@7machi@mstdn.nanamachi.net][https://mstdn.nanamachi.net/@7machi] )
-- github( [@Nanamachi][https://github.com/Nanamachi] )
+- Twitter( [@town7_haruki]( https://twitter.com/town7_haruki ) )
+- mastodon( [@7machi@mstdn.nanamachi.net]( https://mstdn.nanamachi.net/@7machi ) )
+- github( [@Nanamachi]( https://github.com/Nanamachi ) )
 
 ---
 
@@ -34,6 +34,6 @@ Front-end for "UTAKO TUNE": VOCALOID songs search support system
 
 ## Contributing
 Feel free to contact me via below accounts
-- Twitter( [@town7_haruki][https://twitter.com/town7_haruki] )
-- mastodon( [@7machi@mstdn.nanamachi.net][https://mstdn.nanamachi.net/@7machi] )
-- github( [@Nanamachi][https://github.com/Nanamachi] )
+- Twitter( [@town7_haruki]( https://twitter.com/town7_haruki ) )
+- mastodon( [@7machi@mstdn.nanamachi.net]( https://mstdn.nanamachi.net/@7machi ) )
+- github( [@Nanamachi]( https://github.com/Nanamachi ) )

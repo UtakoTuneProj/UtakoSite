@@ -4,11 +4,31 @@
   <h1>動画一覧</h1>
   {% include "paginator.html" %}
 
-  {% for movie in movies %}
-    <iframe width="312" height="176" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
-    </iframe>
-    <a href="{{movie.id}}">{{movie.id}}</a><br>
-  {% endfor %}
+  <table class="table">
+    <tr>
+    {% for movie in movies %}
+      <td>
+        <a href="{{movie.id}}">{{movie.id}}</a>
+        <br>
+        <iframe width="312" height="176" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
+        </iframe>
+        <br>
+        ステータス:
+        {% if movie.iscomplete == 1 %}
+          追跡完了
+        {% elif movie.validity == 0 %}
+          追跡失敗
+        {% else %}
+          追跡中: 次エポック: {{movie.epoch}}
+        {% endif %}
+        <br>
+      </td>
+      {% if forloop.counter|divisibleby:3 %}
+    </tr><tr>
+      {% endif %}
+    {% endfor %}
+    </tr>
+  </table>
 
   {% include "paginator.html" %}
 {% endblock content %}

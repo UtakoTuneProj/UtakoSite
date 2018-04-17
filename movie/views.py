@@ -12,7 +12,7 @@ def index(request):
     validity = request.GET.get('validity', default = -1)
     iscomplete = request.GET.get('iscomplete', default = -1)
     min_view = request.GET.get('min_view', default = 0)
-    max_view = request.GET.get('min_view', default = -1)
+    max_view = request.GET.get('max_view', default = -1)
     
     movies_list = Status.objects.all().order_by(sortby)
 

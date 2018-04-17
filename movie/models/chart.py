@@ -6,9 +6,10 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from .status import Status
 
 class Chart(models.Model):
-    id = models.CharField(db_column='ID', primary_key=True, max_length=12)  # Field name made lowercase.
+    id = models.ForeignKey(Status, on_delete=models.CASCADE, db_column='ID', primary_key = True, max_length=12)  # Field name made lowercase.
     epoch = models.IntegerField()
     time = models.FloatField(db_column='Time')  # Field name made lowercase.
     view = models.IntegerField(db_column='View')  # Field name made lowercase.

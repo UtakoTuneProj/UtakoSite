@@ -8,6 +8,7 @@ def index(request):
     page = request.GET.get('page')
     perpage = request.GET.get('perpage', default = 24)
     sortby = request.GET.get('sortby', default = '-postdate')
+    tags = request.GET.get('tags')
     validity = request.GET.get('validity', default = -1)
     iscomplete = request.GET.get('iscomplete', default = -1)
     min_view = int( request.GET.get('min_view', default = -1) )
@@ -23,13 +24,18 @@ def index(request):
     if iscomplete in ['0','1']:
         movies_list = movies_list.filter(iscomplete = iscomplete)
     if min_view >= 0 or max_view >= 0 or sortby == 'max_view' or sortby == '-max_view':
-        movies_list = movies_list.select_related().annotate(
+        movies_list = movies_list.select_related('chart').annotate(
             max_view = Max('chart__view')
         )
     if min_view >= 0:
         movies_list = movies_list.filter(max_view__gt = min_view)
     if max_view >= 0:
         movies_list = movies_list.filter(max_view__lt = max_view)
+
+    if tags != '':
+        movies_list = movies_list.select_related('idtag').filter(
+            idtag__tagname = tags
+        )
 
     movies_list = movies_list.order_by(sortby)
 

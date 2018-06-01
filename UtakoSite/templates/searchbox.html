@@ -1,0 +1,16 @@
+<div class="m-3">
+  <form action='/movie/' method='get'>
+    <div class="form-group">
+      <input class="form-control" name="tags" value="{{ tags }}" placeholder="タグ">
+    </div>
+    <div class='form-row'>
+      <div class="form-group col-md-6">
+        <input class="form-control" name="min_view" value="{{ min_view }}" type="number" placeholder="再生数下限">
+      </div>
+      <div class="form-group col-md-6">
+        <input class="form-control" name="max_view" value="{{ max_view }}" type="number" placeholder="再生数上限">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">検索</button>
+  </form>
+</div>

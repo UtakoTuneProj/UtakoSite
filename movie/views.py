@@ -11,9 +11,17 @@ def index(request):
     tags = request.GET.get('tags')
     validity = request.GET.get('validity', default = -1)
     iscomplete = request.GET.get('iscomplete', default = -1)
-    min_view = int( request.GET.get('min_view', default = -1) )
-    max_view = int( request.GET.get('max_view', default = -1) )
+    min_view = request.GET.get('min_view', default = -1)
+    max_view = request.GET.get('max_view', default = -1)
 
+    if min_view not in ('', None):
+        min_view = int(min_view)
+    else:
+        min_view = -1
+    if max_view not in ('', None):
+        max_view = int(max_view)
+    else:
+        max_view = -1
     if sortby not in ['postdate', '-postdate', 'max_view', '-max_view']:
         sortby = '-postdate'
     
@@ -23,8 +31,13 @@ def index(request):
         movies_list = movies_list.filter(validity = validity)
     if iscomplete in ['0','1']:
         movies_list = movies_list.filter(iscomplete = iscomplete)
+
+    if tags not in ( '', None ):
+        movies_list = movies_list.filter(
+            idtag__tagname = tags
+        )
     if min_view >= 0 or max_view >= 0 or sortby == 'max_view' or sortby == '-max_view':
-        movies_list = movies_list.select_related('chart').annotate(
+        movies_list = movies_list.annotate(
             max_view = Max('chart__view')
         )
     if min_view >= 0:
@@ -32,16 +45,17 @@ def index(request):
     if max_view >= 0:
         movies_list = movies_list.filter(max_view__lt = max_view)
 
-    if tags != '':
-        movies_list = movies_list.select_related('idtag').filter(
-            idtag__tagname = tags
-        )
-
     movies_list = movies_list.order_by(sortby)
 
     paginator = Paginator(movies_list, perpage)
     movies = paginator.get_page(page)
-    return render(request, 'movie/index.html', {'movies': movies, 'page': movies})
+    return render(request, 'movie/index.html', {
+        'movies': movies,
+        'page': movies,
+        'tags': tags if tags is not None else '',
+        'max_view': max_view if max_view > 0 else '',
+        'min_view': min_view if min_view > 0 else '',
+    })
 
 def detail(request, movie_id):
     movie = get_object_or_404(Status, id=movie_id)

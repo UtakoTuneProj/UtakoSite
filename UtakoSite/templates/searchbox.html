@@ -34,7 +34,23 @@
         {% endif %} >
         <label class="custom-control-label" for="iscomplete">追跡未完了の動画を除外する</label>
       </div>
-      <div class="form-group col-md-1">
+      <div class="form-group col-md-4">
+        <select class="form-control" name="sortby">
+          <option value="-postdate"
+            {% if sortby == "-postdate" %} selected {% endif %}
+          >新着順</option>
+          <option value="postdate"
+            {% if sortby == "postdate" %} selected {% endif %}
+          >古い順</option>
+          <option value="-max_view"
+            {% if sortby == "-max_view" %} selected {% endif %}
+          >再生数順</option>
+          <option value="max_view"
+            {% if sortby == "max_view" %} selected {% endif %}
+          >再生数逆順</option>
+        </select>
+      </div>
+      <div class="form-group col-md-2">
         <button type="submit" class="btn btn-primary">検索</button>
       </div>
     </div>

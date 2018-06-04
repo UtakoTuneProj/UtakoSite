@@ -57,6 +57,7 @@ def index(request):
         'min_view': min_view if min_view > 0 else '',
         'validity': True if validity == 'on'else False,
         'iscomplete': True if iscomplete == 'on' else False,
+        'sortby': sortby
     })
 
 def detail(request, movie_id):

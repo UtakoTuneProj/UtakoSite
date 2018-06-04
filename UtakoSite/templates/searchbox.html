@@ -12,23 +12,25 @@
       </div>
     </div>
     <div class='form-row'>
-      <div class="form-group col-md-3">
+      <div class="form-group col-md-3 custom-control custom-checkbox">
         <input
         type="checkbox"
         class="custom-control-input"
         id="validity"
         name="validity"
+        style="position: static"
         {% if validity %}
           checked
         {% endif %} >
         <label class="custom-control-label" for="validity">追跡失敗した動画を除外する</label>
       </div>
-      <div class="form-group col-md-3">
+      <div class="form-group col-md-3 custom-control custom-checkbox">
         <input
         type="checkbox"
         class="custom-control-input"
         id="iscomplete"
         name="iscomplete"
+        style="position: static"
         {% if iscomplete %}
           checked
         {% endif %} >

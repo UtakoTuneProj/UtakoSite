@@ -9,8 +9,8 @@ def index(request):
     perpage = request.GET.get('perpage', default = 24)
     sortby = request.GET.get('sortby', default = '-postdate')
     tags = request.GET.get('tags')
-    validity = request.GET.get('validity', default = -1)
-    iscomplete = request.GET.get('iscomplete', default = -1)
+    validity = request.GET.get('validity', default = 'off')
+    iscomplete = request.GET.get('iscomplete', default = 'off')
     min_view = request.GET.get('min_view', default = -1)
     max_view = request.GET.get('max_view', default = -1)
 
@@ -27,10 +27,10 @@ def index(request):
     
     movies_list = Status.objects.all()
 
-    if validity in ['0','1']:
-        movies_list = movies_list.filter(validity = validity)
-    if iscomplete in ['0','1']:
-        movies_list = movies_list.filter(iscomplete = iscomplete)
+    if validity == 'on':
+        movies_list = movies_list.filter(validity = True)
+    if iscomplete == 'on':
+        movies_list = movies_list.filter(iscomplete = True)
 
     if tags not in ( '', None ):
         movies_list = movies_list.filter(
@@ -55,10 +55,16 @@ def index(request):
         'tags': tags if tags is not None else '',
         'max_view': max_view if max_view > 0 else '',
         'min_view': min_view if min_view > 0 else '',
+        'validity': True if validity == 'on'else False,
+        'iscomplete': True if iscomplete == 'on' else False,
     })
 
 def detail(request, movie_id):
     movie = get_object_or_404(Status, id=movie_id)
     chart = Chart.objects.filter(id=movie_id)
     tags = Idtag.objects.filter(id=movie_id)
-    return render(request, 'movie/detail.html', { 'movie': movie, 'chart': chart, 'tags': tags })
+    return render( request, 'movie/detail.html', {
+        'movie': movie,
+        'chart': chart,
+        'tags': tags,
+    })

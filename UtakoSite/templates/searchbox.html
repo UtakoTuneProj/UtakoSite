@@ -11,6 +11,32 @@
         <input class="form-control" name="max_view" value="{{ max_view }}" type="number" placeholder="再生数上限">
       </div>
     </div>
-    <button type="submit" class="btn btn-primary">検索</button>
+    <div class='form-row'>
+      <div class="form-group col-md-3">
+        <input
+        type="checkbox"
+        class="custom-control-input"
+        id="validity"
+        name="validity"
+        {% if validity %}
+          checked
+        {% endif %} >
+        <label class="custom-control-label" for="validity">追跡失敗した動画を除外する</label>
+      </div>
+      <div class="form-group col-md-3">
+        <input
+        type="checkbox"
+        class="custom-control-input"
+        id="iscomplete"
+        name="iscomplete"
+        {% if iscomplete %}
+          checked
+        {% endif %} >
+        <label class="custom-control-label" for="iscomplete">追跡未完了の動画を除外する</label>
+      </div>
+      <div class="form-group col-md-1">
+        <button type="submit" class="btn btn-primary">検索</button>
+      </div>
+    </div>
   </form>
 </div>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Min, Max, Count
-from .models import Status, Chart, Idtag, Tagcolor
+from django.db.models import Min, Max, Count, F
+from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, StatusSongRelation
 
 # Create your views here.
 def index(request):
@@ -61,11 +61,21 @@ def index(request):
     })
 
 def detail(request, movie_id):
-    movie = get_object_or_404(Status, id=movie_id)
-    chart = Chart.objects.filter(id=movie_id)
-    tags = Idtag.objects.filter(id=movie_id)
+    movie = get_object_or_404(Status, id = movie_id)
+    chart = Chart.objects.filter(id = movie_id)
+    tags = Idtag.objects.filter(id = movie_id)
+    related = StatusSongRelation.objects.filter(
+        status_id = movie_id
+    ).prefetch_related(
+        'song_relation__id__status_song_relation'
+    ).annotate(
+        destination = F('song_relation__statussongrelation__status_id')
+    ).exclude(
+        destination = movie_id
+        ).order_by('song_relation__distance')[:10]
     return render( request, 'movie/detail.html', {
         'movie': movie,
         'chart': chart,
         'tags': tags,
+        'related': related,
     })

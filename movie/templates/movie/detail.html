@@ -45,6 +45,8 @@
             </iframe>
             <a href="/movie/{{rel.destination}}">{{rel.destination}}</a>
           </li>
+        {% empty %}
+          <li class="list-group-item">この動画はまだ解析されていないようです</li>
         {% endfor %}
         </ul>
       </div>

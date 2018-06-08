@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Min, Max, Count, F
 from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, StatusSongRelation
@@ -79,3 +79,8 @@ def detail(request, movie_id):
         'tags': tags,
         'related': related,
     })
+
+def detail_redirect(request):
+    movie_id = request.GET.get('movie_id')
+    print(movie_id)
+    return redirect('/movie/{}'.format(movie_id))

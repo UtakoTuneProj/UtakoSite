@@ -18,7 +18,7 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 mx-auto">
-            <h1 class="brand-heading">UTAKO TUNES</h1>
+            <h1 class="brand-heading">UTAKO TUNE</h1>
             <p class="intro-text">人工知能による、新しい音楽体験。</p>
             <a href="#about" class="btn btn-circle js-scroll-trigger">
               <i class="fa fa-angle-double-down animated"></i>
@@ -34,8 +34,8 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 mx-auto">
-          <h2>Utakoとは</h2>
-          <p>Utako(折原詩子)は，<a href="http://www.nicovideo.jp/">ニコニコ動画</a>上のVOCALOID/UTAU楽曲を自動で解析することで音楽と音楽，そしてあなたを「繋げる」サービスです．</p>
+          <H2>UTAKOとは</H2>
+          <p>UTAKO(折原詩子)は，<a href="http://www.nicovideo.jp/">ニコニコ動画</a>上のVOCALOID/UTAU楽曲を自動で解析することで音楽と音楽，そしてあなたを「繋げる」サービスです．</p>
           <p>基幹技術として日本発のNeural Network Frameworkである<a href="https://chainer.org/">chainer</a>を採用．Convolutional Neural Networkにより楽曲そのものを「聞いて」解析します</p>
           <p>ユーザーの行動からではなく，楽曲そのものにより楽曲推薦を行うため，まだ有名ではないけれども好みにあっている楽曲とも出会う可能性が高まります．</p>
         </div>
@@ -49,6 +49,12 @@
       <div class="col-lg-8 mx-auto">
         <h2>はじめる</h2>
         <p>登録不要．好きな楽曲のIDを入力するだけ．</p>
+        <form action='/movie/detail' method='get'>
+          <div class="form-row">
+            <input class="form-control col-8" name="movie_id" placeholder="sm.........">
+            <button type="submit" class="form-control col-md-4 btn btn-dark">見に行く</button>
+          </div>
+        </form>
       </div>
     </div>
   </section>

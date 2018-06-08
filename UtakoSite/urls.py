@@ -14,12 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.contrib.flatpages import views
+from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('movie/', include('movie.urls')),
     path('tag/', include('tag.urls')),
     path('pages/', include('django.contrib.flatpages.urls')),
+    re_path('^$', views.flatpage, {'url': 'index/'})
 ]

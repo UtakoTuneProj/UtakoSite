@@ -9,19 +9,26 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-sm justify-content-center bg-dark navbar-dark">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a href="/pages/index/" class='nav-link'>TOP</a>
-        </li>
-        <li class="nav-item">
-          <a href="/movie/" class='nav-link'>Movie</a>
-        </li>
-        <li class="nav-item">
-          <a href="/tag/" class='nav-link'>Tag</a>
-        </li>
-      </ul>
-    </nav>
+    <div class="pos-f-t">
+      <nav class="navbar bg-dark navbar-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </nav>
+      <div class="collapse navbar-expand-sm bg-dark navbar-dark justify-content-center" id="navbarContent">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a href="/pages/index/" class='nav-link'>TOP</a>
+          </li>
+          <li class="nav-item">
+            <a href="/movie/" class='nav-link'>Movie</a>
+          </li>
+          <li class="nav-item">
+            <a href="/tag/" class='nav-link'>Tag</a>
+          </li>
+        </ul>
+      </div>
+    </div>
     {% block body %}
     {{ content }}
     {% endblock %}

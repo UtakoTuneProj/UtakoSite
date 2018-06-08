@@ -1,85 +1,102 @@
 {% extends "appbase.html" %}
 
 {% block content %}
-  <div class="container">
-    <div class="row">
-      <div class="col-sm">
-        <script type="application/javascript" src="https://embed.nicovideo.jp/watch/{{ movie.id }}/script?w=720&h=480"></script>
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="iframe-content">
+        <script type="application/javascript" src="https://embed.nicovideo.jp/watch/{{ movie.id }}/script?w=1024&h=576"></script>
         <noscript>
           <a href="http://www.nicovideo.jp/watch/{{ movie.id }}">ニコニコ動画で開く</a><br />
           当サイトで開くにはJavaScriptを有効にしてください
-        </noscript><br>
-
-        <h3>解析情報</h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <td> 動画ID </td>
-              <td> 投稿日時 </td>
-              <td> エポック数 </td> 
-              <td> 正当性 </td>
-              <td> 完了 </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td> {{ movie.id }} </td>
-              <td> {{ movie.postdate }} </td>
-              <td> {{ movie.epoch }} </td>
-              <td> {{ movie.validity }} </td>
-              <td> {{ movie.iscomplete }} </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3>チェックポイント時タグ</h3>
-        <ul class"list-group">
-        {% for tag_cell in tags %}
-          <li class="list-group-item"> <a href="../?tags={{tag_cell.tagname}}">{{tag_cell.tagname}}</a> </li>
-        {% endfor %}
-        </ul>
-      </div>
-  
-      <div class="col-sm">
-        <h3>似てるかも</h3>
-        <ul class"list-group">
-        {% for rel in related %}
-          <li class="list-group-item"> 
-            <iframe width="312" height="132" src="https://ext.nicovideo.jp/thumb/{{rel.destination}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
-            </iframe>
-            <a href="/movie/{{rel.destination}}">{{rel.destination}}</a>
-          </li>
-        {% empty %}
-          <li class="list-group-item">この動画はまだ解析されていないようです</li>
-        {% endfor %}
-        </ul>
+        </noscript>
       </div>
     </div>
   </div>
 
-  <h3>推移</h3>
-  <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#chart">展開</button>
-
-  <div class="collapse" id="chart">
-  <table class="table">
-    <thead>
-      <tr>
-        <td> epoch </td>
-        <td> views </td>
-        <td> comments </td> 
-        <td> mylists </td>
-      </tr>
-    </thead>
-    <tbody>
-      {% for chart_cell in chart %}
-      <tr>
-        <td> {{ forloop.counter0 }} </td>
-        <td> {{chart_cell.view}} </td>
-        <td> {{chart_cell.comment}} </td>
-        <td> {{chart_cell.mylist}} </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="row">
+    <div class="col-12">
+      <h3>似てるかも</h3>
+    </div>
+    {% for rel in related %}
+      <div class='col-sm-4 my-2'>
+        <iframe width="312" height="132" src="https://ext.nicovideo.jp/thumb/{{rel.destination}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
+        </iframe><br>
+        <a href="/movie/{{rel.destination}}">{{rel.destination}}</a>
+      </div>
+    {% empty %}
+      <div class='col'>
+        この動画はまだ解析されていないようです
+      </div>
+    {% endfor %}
   </div>
+
+  <div class="row">
+    <div class="col-12">
+      <h3>解析情報</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <td> 動画ID </td>
+            <td> 投稿日時 </td>
+            <td> エポック数 </td> 
+            <td> 正当性 </td>
+            <td> 完了 </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td> {{ movie.id }} </td>
+            <td> {{ movie.postdate }} </td>
+            <td> {{ movie.epoch }} </td>
+            <td> {{ movie.validity }} </td>
+            <td> {{ movie.iscomplete }} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <h3>チェックポイント時タグ</h3>
+    </div>
+    {% for tag_cell in tags %}
+      <div class='col-sm-3 my-2'>
+        <a href="../?tags={{tag_cell.tagname}}">{{tag_cell.tagname}}</a>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h3>推移</h3>
+      <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#chart">展開</button>
+    </div>
+  </div>
+
+  <div class="collapse row" id="chart">
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <td> epoch </td>
+            <td> views </td>
+            <td> comments </td> 
+            <td> mylists </td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for chart_cell in chart %}
+          <tr>
+            <td> {{ forloop.counter0 }} </td>
+            <td> {{chart_cell.view}} </td>
+            <td> {{chart_cell.comment}} </td>
+            <td> {{chart_cell.mylist}} </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
 {% endblock content %}

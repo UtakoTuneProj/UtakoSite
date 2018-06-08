@@ -1,3 +1,4 @@
 *.sqlite3
 secrets.py
 __pycache__/
+collect_static

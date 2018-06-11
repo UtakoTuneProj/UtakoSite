@@ -1,5 +1,9 @@
 {% extends "appbase.html" %}
 
+{% block title %}
+{% if tags %}{{tags}}{%else%}SEARCH{% endif %}
+{% endblock title %}
+
 {% block content %}
   {% include "searchbox.html" %}
   {% include "paginator.html" %}

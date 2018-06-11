@@ -6,8 +6,8 @@
 
 {% block content %}
   <div class="row">
-    <div class="col-md-8 offset-md-2">
-      <div class="iframe-content">
+    <div class="col-lg-8 offset-lg-2">
+      <div class="embed_movie">
         <script type="application/javascript" src="https://embed.nicovideo.jp/watch/{{ movie.id }}/script?w=1024&h=576"></script>
         <noscript>
           <a href="http://www.nicovideo.jp/watch/{{ movie.id }}">ニコニコ動画で開く</a><br />
@@ -22,11 +22,14 @@
       <h3>似てるかも</h3>
     </div>
     {% for rel in related %}
-      <div class='col-sm-4 my-2'>
-        <iframe width="312" height="132" src="https://ext.nicovideo.jp/thumb/{{rel.destination}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
-        </iframe><br>
+      <div class='col-md-6 col-lg-4 my-2'>
+        <div class="embed_thumbnail">
+          <iframe width="320" height="125" src="https://ext.nicovideo.jp/thumb/{{rel.destination}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
+          </iframe><br>
+        </div>
         <a href="/movie/{{rel.destination}}">{{rel.destination}}</a>
       </div>
+
     {% empty %}
       <div class='col'>
         この動画はまだ解析されていないようです

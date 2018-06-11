@@ -10,8 +10,8 @@
 
   <div class='row'>
   {% for movie in movies %}
-    <div class='col-sm my-2'><div class="box">
-      <iframe width="312" height="176" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
+    <div class='col-lg-4 col-md-6 my-2'><div class="box">
+      <iframe width="320" height="125" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
       </iframe>
       <br>
       <a href="{{movie.id}}">{{movie.id}}</a>

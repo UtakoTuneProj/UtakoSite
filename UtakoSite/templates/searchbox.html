@@ -12,29 +12,17 @@
       </div>
     </div>
     <div class='form-row'>
-      <div class="form-group col-md-3 custom-control custom-checkbox">
+      <div class="form-group col-md-3 offset-md-3 custom-control custom-checkbox">
         <input
         type="checkbox"
         class="custom-control-input"
-        id="validity"
-        name="validity"
+        id="isanalyzed"
+        name="isanalyzed"
         style="position: static"
-        {% if validity %}
+        {% if isanalyzed %}
           checked
         {% endif %} >
-        <label class="custom-control-label" for="validity">追跡失敗した動画を除外する</label>
-      </div>
-      <div class="form-group col-md-3 custom-control custom-checkbox">
-        <input
-        type="checkbox"
-        class="custom-control-input"
-        id="iscomplete"
-        name="iscomplete"
-        style="position: static"
-        {% if iscomplete %}
-          checked
-        {% endif %} >
-        <label class="custom-control-label" for="iscomplete">追跡未完了の動画を除外する</label>
+        <label class="custom-control-label" for="isanalyzed">解析された動画のみ表示する</label>
       </div>
       <div class="form-group col-md-4">
         <select class="form-control" name="sortby">

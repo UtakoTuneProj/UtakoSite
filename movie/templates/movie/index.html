@@ -11,6 +11,11 @@
       </iframe>
       <br>
       <a href="{{movie.id}}">{{movie.id}}</a>
+      {% if movie.count > 1 %}
+        解析済
+      {% else %}
+        未解析
+      {% endif %}
     </div></div>
   {% endfor %}
   </div>

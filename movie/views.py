@@ -9,8 +9,7 @@ def index(request):
     perpage = request.GET.get('perpage', default = 24)
     sortby = request.GET.get('sortby', default = '-postdate')
     tags = request.GET.get('tags')
-    validity = request.GET.get('validity', default = 'off')
-    iscomplete = request.GET.get('iscomplete', default = 'off')
+    isanalyzed = request.GET.get('isanalyzed', default = 'off')
     min_view = request.GET.get('min_view', default = -1)
     max_view = request.GET.get('max_view', default = -1)
 
@@ -25,12 +24,10 @@ def index(request):
     if sortby not in ['postdate', '-postdate', 'max_view', '-max_view']:
         sortby = '-postdate'
     
-    movies_list = Status.objects.all()
+    movies_list = Status.objects.prefetch_related('statussongrelation_set').annotate(count = Count('id'))
 
-    if validity == 'on':
-        movies_list = movies_list.filter(validity = True)
-    if iscomplete == 'on':
-        movies_list = movies_list.filter(iscomplete = True)
+    if isanalyzed == 'on':
+        movies_list = movies_list.filter(statussongrelation__song_relation_id__isnull = False)
 
     if tags not in ( '', None ):
         movies_list = movies_list.filter(
@@ -55,8 +52,7 @@ def index(request):
         'tags': tags if tags is not None else '',
         'max_view': max_view if max_view > 0 else '',
         'min_view': min_view if min_view > 0 else '',
-        'validity': True if validity == 'on'else False,
-        'iscomplete': True if iscomplete == 'on' else False,
+        'isanalyzed': True if isanalyzed == 'on' else False,
         'sortby': sortby
     })
 

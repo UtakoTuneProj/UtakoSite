@@ -9,7 +9,7 @@ def index(request):
     perpage = request.GET.get('perpage', default = 24)
     sortby = request.GET.get('sortby', default = '-postdate')
     tags = request.GET.get('tags')
-    isanalyzed = request.GET.get('isanalyzed', default = 'off')
+    isanalyzed = request.GET.get('isanalyzed', default = 'on')
     min_view = request.GET.get('min_view', default = -1)
     max_view = request.GET.get('max_view', default = -1)
 

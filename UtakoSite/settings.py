@@ -62,7 +62,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries': {
-                'page_with_query': 'UtakoSite.templatetags.page_with_query'
+                'page_with_query': 'UtakoSite.templatetags.page_with_query',
+                'google_ad_client': 'UtakoSite.templatetags.google_ad_client',
             }
         },
     },

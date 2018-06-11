@@ -10,3 +10,9 @@
   width: 100%;
   height: 100%;
 }
+.bg-dark{
+  background-color: #3a3d3f!important;
+}
+.navbar-brand > img{
+  height: 50px;
+}

@@ -24,7 +24,9 @@ def index(request):
     if sortby not in ['postdate', '-postdate', 'max_view', '-max_view']:
         sortby = '-postdate'
     
-    movies_list = Status.objects.prefetch_related('statussongrelation_set').annotate(count = Count('id'))
+    movies_list = Status.objects.prefetch_related(
+        'statussongrelation_set'
+    ).annotate(count = Count('statussongrelation__song_relation_id'))
 
     if isanalyzed == 'on':
         movies_list = movies_list.filter(statussongrelation__song_relation_id__isnull = False)

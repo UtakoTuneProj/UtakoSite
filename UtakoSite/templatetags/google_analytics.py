@@ -4,5 +4,5 @@ from django.conf import settings
 register = template.Library()
 
 @register.simple_tag
-def google_ad_client():
+def google_analytics():
     return settings.GOOGLE_ANALYTICS

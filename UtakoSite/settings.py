@@ -64,6 +64,7 @@ TEMPLATES = [
             'libraries': {
                 'page_with_query': 'UtakoSite.templatetags.page_with_query',
                 'google_ad_client': 'UtakoSite.templatetags.google_ad_client',
+                'google_analytics': 'UtakoSite.templatetags.google_analytics',
             }
         },
     },

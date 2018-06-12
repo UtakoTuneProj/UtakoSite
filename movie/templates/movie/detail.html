@@ -18,11 +18,11 @@
   </div>
 
   <div class="row">
-    <div class="col-12">
+    <div class="col-12 mt-3">
       <h3>似てるかも</h3>
     </div>
     {% for rel in related %}
-      <div class='col-md-6 col-lg-4 my-2'>
+      <div class='col-md-6 col-lg-4 my-3'>
         <div class="embed_thumbnail">
           <iframe width="320" height="125" src="https://ext.nicovideo.jp/thumb/{{rel.destination}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
           </iframe><br>
@@ -38,7 +38,7 @@
   </div>
 
   <div class="row">
-    <div class="col-12">
+    <div class="col-12 mt-3">
       <h3>解析情報</h3>
       <table class="table">
         <thead>
@@ -64,7 +64,7 @@
   </div>
 
   <div class="row">
-    <div class="col-12">
+    <div class="col-12 mt-3">
       <h3>チェックポイント時タグ</h3>
     </div>
     {% for tag_cell in tags %}
@@ -75,8 +75,8 @@
   </div>
 
   <div class="row">
-    <div class="col">
-      <h3>推移</h3>
+    <div class="col mt-3">
+      <h3>再生数推移</h3>
       <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#chart">展開</button>
     </div>
   </div>

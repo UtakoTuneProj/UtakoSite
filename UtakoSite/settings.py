@@ -60,11 +60,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'UtakoSite.context_processors.google_ad_client.google_ad_client',
+                'UtakoSite.context_processors.google_analytics.google_analytics',
             ],
             'libraries': {
                 'page_with_query': 'UtakoSite.templatetags.page_with_query',
-                'google_ad_client': 'UtakoSite.templatetags.google_ad_client',
-                'google_analytics': 'UtakoSite.templatetags.google_analytics',
             }
         },
     },

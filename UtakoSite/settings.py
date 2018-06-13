@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'UtakoSite.context_processors.google_ad_client.google_ad_client',
                 'UtakoSite.context_processors.google_analytics.google_analytics',
+                'UtakoSite.context_processors.isdebug.isdebug',
             ],
             'libraries': {
                 'page_with_query': 'UtakoSite.templatetags.page_with_query',

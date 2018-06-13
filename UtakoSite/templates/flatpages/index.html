@@ -1,78 +1,149 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}
-人工知能による、新しい音楽体験。
+ABOUT
 {% endblock title %}
 
 {% block extra_css %}
-  <!-- Custom fonts for this template -->
-  <link href="{% static 'grayscale/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
-  <link href='https://fonts.googleapis.com/css?family=Cabin:700' rel='stylesheet' type='text/css'>
+    <!-- Custom fonts for this template -->
+    <link href="{% static 'startbootstrap-landing-page/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'startbootstrap-landing-page/vendor/simple-line-icons/css/simple-line-icons.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
-  <!-- Custom styles for this template -->
-  <link href="{% static 'grayscale/css/grayscale.css' %}" rel="stylesheet">
-{% endblock extra_css %}
+    <!-- Custom styles for this template -->
+    <link href="{% static 'startbootstrap-landing-page/css/landing-page.min.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block body %}
-  <!-- Intro Header -->
-  <header class="masthead">
-    <div class="intro-body">
+    <!-- Masthead -->
+    <header class="masthead text-white text-center">
+      <div class="overlay"></div>
       <div class="container">
         <div class="row">
-          <div class="col-lg-8 mx-auto">
+          <div class="col-xl-9 mx-auto">
             <img class="brand-heading" src="{%static 'img/logo_main_opaque.svg'%}"
            alt="UTAKO TUNE 人工知能による、新しい音楽体験。">
-            <a href="#about" class="btn btn-circle js-scroll-trigger">
-              <i class="fa fa-angle-double-down animated"></i>
-            </a>
           </div>
         </div>
       </div>
-    </div>
-  </header>
+    </header>
+
+    <!-- Icons Grid -->
+    <section class="features-icons bg-light text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+              <div class="features-icons-icon d-flex">
+                <i class="icon-music-tone-alt m-auto text-primary"></i>
+              </div>
+              <h3>新しい音楽体験</h3>
+              <p class="lead mb-0">好きなVOCALOID曲と簡単に出会える</p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+              <div class="features-icons-icon d-flex">
+                <i class="icon-bulb m-auto text-primary"></i>
+              </div>
+              <h3>最新の技術</h3>
+              <p class="lead mb-0">最先端の機械学習技術の利用</p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="features-icons-item mx-auto mb-0 mb-lg-3">
+              <div class="features-icons-icon d-flex">
+                <i class="icon-emotsmile m-auto text-primary"></i>
+              </div>
+              <h3>キャラクター</h3>
+              <p class="lead mb-0">オリジナルキャラクターがVOCALOID曲の世界を案内</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
   <!-- About Section -->
-  <section id="about" class="content-section text-center">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 mx-auto">
-          <H2>UTAKOとは</H2>
-          <p>UTAKO(折原詩子)は，<a href="http://www.nicovideo.jp/">ニコニコ動画</a>上のVOCALOID/UTAU楽曲を自動で解析することで音楽と音楽，そしてあなたを「繋げる」サービスです．</p>
-          <p>基幹技術として日本発のNeural Network Frameworkである<a href="https://chainer.org/">chainer</a>を採用．Convolutional Neural Networkにより楽曲そのものを「聞いて」解析します</p>
-          <p>ユーザーの行動からではなく，楽曲そのものにより楽曲推薦を行うため，まだ有名ではないけれども好みにあっている楽曲とも出会う可能性が高まります．</p>
+    <section class="showcase">
+      <div class="container-fluid p-0">
+
+        <div class="row no-gutters">
+          <div class="col-lg-6 order-lg-2 text-white showcase-img" style="background-image: url('img/bg-showcase-1.jpg');"></div>
+          <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+            <H2>Principle - 理念</H2>
+            <p class="lead mb-0">
+            「ボカロ曲，たくさんあって何から聞けばいいのかわからない」<br>
+            「新しい曲，作者を見つけたいけど，手間がかかる」<br>
+              こう思ったことはありませんか．私は思いました．<br>
+              1日に100以上も投稿される新曲から好みの曲を探すのは至難の業です．<br>
+              ここから自分の好みに合いそうな曲を探し出してくれる人がいれば．<br>
+              ここから流行りそうな曲をいち早く探し出してくれるサービスがあれば．<br>
+              それを叶えるかもしれないのが，UTAKO TUNEです．
+            </p>
+          </div>
+        </div>
+
+        <div class="row no-gutters">
+          <div class="col-lg-6 text-white showcase-img" style="background-image: url('img/bg-showcase-2.jpg');"></div>
+          <div class="col-lg-6 my-auto showcase-text">
+          <H2>Technology - 技術</H2>
+          <p class="lead mb-0">
+            背景には最先端の機械学習技術である畳み込みニューラルネットワークを使用．<br>
+            人工知能が曲と曲を区別する際の「間違い」をあえて利用することで，
+            今までにない楽曲推薦を可能としました．<br>
+            今後も様々な最新技術を用いてさらに精度の高いサービスを提供します．
+          </p>
+        </div>
+      </div>
+
+      <div class="row no-gutters">
+        <div class="col-lg-6 order-lg-2 text-white showcase-img" style="background-image: url('img/bg-showcase-2.jpg');"></div>
+        <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+          <H2>Character - キャラクター</H2>
+          <p class="lead mb-0">
+            UTAKO TUNEのガイドキャラクターが「折原 詩子」です．
+            2x歳，自宅警備員．実はハイスペックなのに，それを全く感じさせないダメ人間．
+            掃除，洗濯，料理等諸々の生活の能力は皆無ですが，機械には強いです．
+            ニコ動のボカロタグに張り付いては日夜楽曲を探しています．
+          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Download Section -->
-  <section id="download" class="download-section content-section text-center">
+  <!-- Call to Action -->
+  <section class="call-to-action text-white text-center">
+    <div class="overlay"></div>
     <div class="container">
-      <div class="col-md-8 mx-auto">
-        <h2>はじめる</h2>
-        <p>登録不要．好きな楽曲を検索するだけ．</p>
-        <a class="col-md-4 btn btn-dark" href="/movie/">START</a>
+      <div class="row">
+        <div class="col-xl-10 mx-auto">
+          <h2 class="mb-4">さあ，始めましょう</h2>
+        </div>
+        <div class="col-6 col-md-4 mx-auto">
+          <div class="col">
+            <a class="btn btn-block btn-lg btn-primary" href="/movie">START</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Contact Section -->
-  <section id="contact" class="content-section text-center">
+  <section id="contact" class="features-icons text-center">
     <div class="container">
       <div class="row">
         <div class="col-lg-8 mx-auto">
           <h2>開発に参加する</h2>
           <p>以下のリンクからお気軽にどうぞ．</p>
-          <ul class="list-inline banner-social-buttons">
+          <ul class="list-inline">
             <li class="list-inline-item">
-              <a href="https://twitter.com/utako_orihara" class="btn btn-default btn-lg">
+              <a href="https://twitter.com/utako_orihara" class="btn btn-outline-primary btn-lg">
                 <i class="fa fa-twitter fa-fw"></i>
                 <span class="network-name">Twitter</span>
               </a>
             </li>
             <li class="list-inline-item">
-              <a href="https://github.com/UtakoTuneProj/" class="btn btn-default btn-lg">
+              <a href="https://github.com/UtakoTuneProj/" class="btn btn-outline-primary btn-lg">
                 <i class="fa fa-github fa-fw"></i>
                 <span class="network-name">Github</span>
               </a>
@@ -85,9 +156,4 @@
 {% endblock body %}
 
 {% block extra_js %}
-  <!-- Plugin JavaScript -->
-  <script src="{% static 'grayscale/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-
-  <!-- Custom scripts for this template -->
-  <script src="{% static 'grayscale/js/grayscale.min.js' %}"></script>
 {% endblock extra_js %}

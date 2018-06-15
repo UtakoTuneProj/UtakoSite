@@ -18,6 +18,7 @@
     <meta name="robots" content="noindex,noarchive">
     {% endif %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    {% block extra_css %}{% endblock %}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="icon" type="image/x-icon" href="
     {% if isdebug %}
@@ -31,7 +32,6 @@
     google_ad_client: "{{ google_ad_client }}",
     enable_page_level_ads: true
     });</script>
-    {% block extra_css %}{% endblock %}
     <title>{% block title %}{% endblock %} | UTAKO TUNE</title>
   </head>
   <body>

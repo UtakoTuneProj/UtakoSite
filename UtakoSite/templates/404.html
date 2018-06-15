@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+Not Found
+{% endblock title %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="row my-3">
+    <div class="col text-center">
+      <h1>404 - Not Found</h1>
+    </div>
+  </div>
+  <div class="row mx-auto">
+    <div class="col-sm-4 my-3">
+      <img src="{% static 'img/404.jpg'%}">
+    </div>
+    <div class="col-sm-8">
+      <p>このページは存在していないようです．</p>
+      <p>考えられる原因:<ul>
+        <li>UTAKOが追跡していない動画を要求した(VOCALOID曲以外の動画，プロジェクト始動(2016年秋)以前の動画など)</li>
+        <li>検索パラメータが間違っている</li>
+      </ul></p>
+      <p>よろしければ，UTAKO TUNE改善のために情報を提供していただけませんか?
+      直前のページ，クリックしたリンクを書き添えて<a href="https://twitter.com/utako_orihara">Twitter</a>または
+      utako AT nanamachi.netまで連絡をお願いします．</p>
+    </div>
+  </div>
+</div>
+{% endblock body %}
+
+{% block extra_js %}
+{% endblock extra_js %}

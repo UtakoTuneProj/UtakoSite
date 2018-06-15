@@ -28,3 +28,20 @@
 .navbar-brand > img{
   height: 50px;
 }
+#utako-img{
+  width: 100%;
+}
+header.masthead{
+  background: url('../img/index_04.jpg') no-repeat top center;
+  background-size: cover;
+}
+.call-to-action{
+  background: url('../img/index_00.jpg') no-repeat top center;
+  background-size: cover;
+}
+@media(min-width: 768px) {
+  .call-to-action{
+    padding-top: 15rem;
+    padding-bottom: 15rem;
+  }
+}

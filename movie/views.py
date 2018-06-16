@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Min, Max, Count, F
+from django.db.models import Min, Max, Count, F, Exists, OuterRef
 from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, StatusSongRelation
 
 # Create your views here.
@@ -24,17 +24,17 @@ def index(request):
     if sortby not in ['postdate', '-postdate', 'max_view', '-max_view']:
         sortby = '-postdate'
     
-    movies_list = Status.objects.prefetch_related(
-        'statussongrelation_set'
-    ).annotate(count = Count('statussongrelation__song_relation_id'))
+    ssr_subq = StatusSongRelation.objects.filter(status_id = OuterRef('id'))
+    movies_list = Status.objects.annotate(isanalyzed = Exists(ssr_subq))
 
     if isanalyzed == 'on':
-        movies_list = movies_list.filter(statussongrelation__song_relation_id__isnull = False)
+        movies_list = movies_list.filter(isanalyzed = True)
 
     if tags not in ( '', None ):
         movies_list = movies_list.filter(
             idtag__tagname = tags
         )
+
     if min_view >= 0 or max_view >= 0 or sortby == 'max_view' or sortby == '-max_view':
         movies_list = movies_list.annotate(
             max_view = Max('chart__view')

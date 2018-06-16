@@ -5,7 +5,7 @@ from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, Sta
 
 # Create your views here.
 def index(request):
-    page = request.GET.get('page')
+    page = request.GET.get('page', default=1)
     perpage = request.GET.get('perpage', default = 24)
     sortby = request.GET.get('sortby', default = '-postdate')
     tags = request.GET.get('tags')
@@ -46,8 +46,7 @@ def index(request):
 
     movies_list = movies_list.order_by(sortby)
 
-    paginator = Paginator(movies_list, perpage)
-    movies = paginator.get_page(page)
+    movies = Paginator(movies_list, perpage).get_page(page)
     return render(request, 'movie/index.html', {
         'movies': movies,
         'page': movies,
@@ -70,7 +69,7 @@ def detail(request, movie_id):
         destination = F('song_relation__statussongrelation__status_id')
     ).exclude(
         destination = movie_id
-        ).order_by('song_relation__distance')[:10]
+        ).order_by('song_relation__distance')[:12]
     return render( request, 'movie/detail.html', {
         'movie': movie,
         'chart': chart,

@@ -10,16 +10,18 @@
 
   <div class='row'>
   {% for movie in movies %}
-    <div class='col-lg-4 col-md-6 my-2'><div class="box">
+    <div class='col-lg-4 col-md-6 my-3'><div class="box">
       <iframe width="320" height="125" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
       </iframe>
       <br>
-      <a href="{{movie.id}}">{{movie.id}}</a>
+      <a href="{{movie.id}}" class="btn {% if movie.isanalyzed %}btn-outline-primary{% else %}btn-outline-secondary{% endif %} btn-lg">
+      {{movie.id}}
       {% if movie.isanalyzed %}
         解析済
       {% else %}
         未解析
       {% endif %}
+      </a>
     </div></div>
   {% endfor %}
   </div>

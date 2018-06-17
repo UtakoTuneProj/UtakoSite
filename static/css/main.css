@@ -4,7 +4,7 @@
   padding: 56.25% 0 0 0;
 }
 .embed_thumbnail{
-  position: absolute;
+  position: relative;
   width: 100%;
   padding: 125px 0 0 0;
 }

@@ -10,7 +10,8 @@ from django.db import models
 from .status import Status
 
 class SongIndex(models.Model):
-    id = models.ForeignKey(Status, on_delete = models.CASCADE, db_column='ID', primary_key=True, max_length=12)  # Field name made lowercase.
+    id = models.AutoField(primary_key=True)
+    status = models.ForeignKey(Status, on_delete = models.CASCADE, max_length=12, default="UNKNOWN")  # Field name made lowercase.
     value0 = models.FloatField()
     value1 = models.FloatField()
     value2 = models.FloatField()
@@ -23,4 +24,5 @@ class SongIndex(models.Model):
 
     class Meta:
         db_table = 'song_index'
+        unique_together = (('status', 'version'),)
 

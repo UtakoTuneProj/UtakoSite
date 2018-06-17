@@ -6,7 +6,7 @@
 .embed_thumbnail{
   position: relative;
   width: 100%;
-  padding: 35% 0 0 0;
+  padding: 125px 0 0 0;
 }
 .embed_movie iframe{
   position: absolute;

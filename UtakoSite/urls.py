@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from django.conf import settings
 from django.contrib.flatpages import views
 from django.shortcuts import redirect
 
@@ -25,3 +26,9 @@ urlpatterns = [
     path('pages/', include('django.contrib.flatpages.urls')),
     re_path('^$', views.flatpage, {'url': 'index/'})
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        re_path('^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

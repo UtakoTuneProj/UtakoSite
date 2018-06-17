@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-from .secrets import *
+from .secrets import SECRET_KEY, DATABASES
+from .secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
+from .secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS
+from .secrets import STATIC_URL
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

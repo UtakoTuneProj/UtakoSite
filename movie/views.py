@@ -40,9 +40,9 @@ def index(request):
             max_view = Max('chart__view')
         )
     if min_view >= 0:
-        movies_list = movies_list.filter(max_view__gt = min_view)
+        movies_list = movies_list.filter(max_view__gte = min_view)
     if max_view >= 0:
-        movies_list = movies_list.filter(max_view__lt = max_view)
+        movies_list = movies_list.filter(max_view__lte = max_view)
 
     movies_list = movies_list.order_by(sortby)
 
@@ -79,5 +79,4 @@ def detail(request, movie_id):
 
 def detail_redirect(request):
     movie_id = request.GET.get('movie_id')
-    print(movie_id)
     return redirect('/movie/{}'.format(movie_id))

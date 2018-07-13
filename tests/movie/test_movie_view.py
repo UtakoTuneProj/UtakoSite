@@ -6,8 +6,7 @@ from django.test import Client
 
 from movie.models import Status, Chart, Idtag, SongIndex, SongRelation, StatusSongRelation
 
-@pytest.mark.django_db
-class TestMovieViewIndex():
+class TestMovieViewAbstract():
     c = Client()
     now = datetime.now()
 
@@ -134,6 +133,8 @@ class TestMovieViewIndex():
             song_relation=rel,
         )
 
+@pytest.mark.django_db
+class TestMovieViewIndex(TestMovieViewAbstract):
     def test_default(self):
         self.create_testcases(dict(
             mvid='sm1',
@@ -483,3 +484,80 @@ class TestMovieViewIndex():
         assert response.status_code == 200
         # returns max_view <= 100
         assert response.context['movies'].paginator.count == 3
+
+@pytest.mark.django_db
+class TestMovieViewDetail(TestMovieViewAbstract):
+    def test_movie_id(self):
+        self.create_testcases(dict(
+            mvid='sm1',
+            postdate=self.now - timedelta(days=8),
+            validity=True,
+            max_view=90,
+            tags=['にこにこ', '初音ミク'],
+            index=(1,0,0,0,0,0,0,0),
+        ))
+        response = self.c.get('/movie/sm1/')
+        # status must be OK
+        assert response.status_code == 200
+        # not return non-indexed movie
+        assert response.context['movie'].id == 'sm1'
+
+    def test_tags(self):
+        self.create_testcases(dict(
+            mvid='sm1',
+            postdate=self.now - timedelta(days=8),
+            validity=True,
+            max_view=90,
+            tags=['にこにこ', '初音ミク'],
+            index=(1,0,0,0,0,0,0,0),
+        ))
+        response = self.c.get('/movie/sm1/')
+        # status must be OK
+        assert response.status_code == 200
+        # not return non-indexed movie
+        assert 'にこにこ' in list(map(lambda x: getattr(x, 'tagname'), response.context['tags'] ))
+        assert '初音ミク' in list(map(lambda x: getattr(x, 'tagname'), response.context['tags'] ))
+
+    def test_related(self):
+        self.create_testcases(dict(
+            mvid='sm1',
+            postdate=self.now - timedelta(days=8),
+            validity=True,
+            max_view=90,
+            tags=['にこにこ', '初音ミク'],
+            index=(1,0,0,0,0,0,0,0),
+        ),dict(
+            mvid='sm2',
+            postdate=self.now - timedelta(days=7),
+            validity=True,
+            max_view=90,
+            tags=['にこにこ', '初音ミク'],
+            index=(1,1,0,0,0,0,0,0),
+        ),dict(
+            mvid='sm3',
+            postdate=self.now - timedelta(days=6),
+            validity=True,
+            max_view=90,
+            tags=['にこにこ', '初音ミク'],
+            index=(1,1,1,0,0,0,0,0),
+        ),dict(
+            mvid='sm4',
+            postdate=self.now - timedelta(days=5),
+            validity=True,
+            max_view=90,
+            tags=['にこにこ', '初音ミク'],
+            index=(1,1,1,0,0,0,0,0),
+        ))
+        response = self.c.get('/movie/sm1/')
+        # status must be OK
+        assert response.status_code == 200
+        # not return non-indexed movie
+        assert list(map(lambda x: getattr(x, 'destination'), response.context['related'] )) == ['sm2', 'sm3', 'sm4']
+    
+    def test_404(self):
+        response = self.c.get('/movie/sm1/')
+        assert response.status_code == 404
+
+    def test_redirect(self):
+        response = self.c.get('/movie/detail?movie_id=sm1')
+        assert response.status_code == 301

@@ -2,5 +2,6 @@
 secrets.py
 __pycache__/
 .pytest_cache/
+htmlcov/
 collect_static
 .coverage

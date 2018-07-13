@@ -59,8 +59,8 @@ def index(request):
 
 def detail(request, movie_id):
     movie = get_object_or_404(Status, id = movie_id)
-    chart = Chart.objects.filter(id = movie_id)
-    tags = Idtag.objects.filter(id = movie_id)
+    chart = Chart.objects.filter(status_id = movie_id)
+    tags = Idtag.objects.filter(status_id = movie_id)
     related = StatusSongRelation.objects.filter(
         status_id = movie_id
     ).prefetch_related(

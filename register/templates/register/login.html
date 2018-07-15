@@ -1,0 +1,44 @@
+{% extends "appbase.html" %}
+
+{% block title %}
+  LOGIN
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="card my-5 col-lg-6 offset-lg-3">
+    <div class="card-body">
+      {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+          <p>アカウント名かパスワードが一致しません．</p>
+        </div>
+      {% endif %}
+      {% if next %}
+        <div class="alert alert-danger" role="alert">
+          {% if user.is_authenticated %}
+          <p>このページへのアクセス権限が足りません．このページへのアクセス権を所有する
+          アカウントでログインしてください．</p>
+          {% else %}
+          <p>この機能を利用するためにはログインが必要です．</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <form method="post" action="{% url 'register:login' %}" >
+        {% csrf_token %}
+        <div class="form-group">
+          {{form.username.label_tag}}
+          {{form.username}}
+        </div>
+        <div class="form-group">
+          {{form.password.label_tag}}
+          {{form.password}}
+        </div>
+        <input type="submit" class="btn btn-primary float-right" value="ログイン" />
+        <input type="hidden" name="next" value="{{ next }}" />
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

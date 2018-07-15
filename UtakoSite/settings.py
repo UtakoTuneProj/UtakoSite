@@ -30,6 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INSTALLED_APPS = [
     'movie.apps.MovieConfig',
     'tag.apps.TagConfig',
+    'register.apps.RegisterConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -146,4 +147,7 @@ if DEBUG:
 
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS': False,
-    } 
+    }
+
+LOGIN_URL = 'register:login'
+LOGIN_REDIRECT_URL = 'movie:index'

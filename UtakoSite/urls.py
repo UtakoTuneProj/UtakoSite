@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('movie/', include('movie.urls')),
     path('tag/', include('tag.urls')),
+    path('auth/', include('register.urls')),
     path('pages/', include('django.contrib.flatpages.urls')),
     re_path('^$', views.flatpage, {'url': 'index/'})
 ]

@@ -19,4 +19,3 @@ class Chart(models.Model):
     class Meta:
         db_table = 'chart'
         unique_together = (('id', 'epoch'),)
-

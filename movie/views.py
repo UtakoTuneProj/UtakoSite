@@ -23,7 +23,7 @@ def index(request):
         max_view = -1
     if sortby not in ['postdate', '-postdate', 'max_view', '-max_view']:
         sortby = '-postdate'
-    
+
     ssr_subq = StatusSongRelation.objects.filter(status_id = OuterRef('id'))
     movies_list = Status.objects.annotate(isanalyzed = Exists(ssr_subq))
 

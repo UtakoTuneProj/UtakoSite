@@ -16,4 +16,3 @@ class Idtag(models.Model):
     class Meta:
         db_table = 'IDtag'
         unique_together = (('id', 'tagname'),)
-

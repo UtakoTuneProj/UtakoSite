@@ -23,4 +23,3 @@ class SongIndex(models.Model):
 
     class Meta:
         db_table = 'song_index'
-

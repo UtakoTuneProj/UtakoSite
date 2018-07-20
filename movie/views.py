@@ -49,43 +49,45 @@ class IndexView(ListView):
         else:
             context['not_analyzed'] = False
 
+        if get_request('tags') not in ['', None]:
+            context['tags'] = get_request('tags')
+
         if get_request('perpage') not in ['', None]:
-            paginate_by = get_request('perpage')
+            self.paginate_by = get_request('perpage')
 
         return context
 
     def get_queryset(self):
         context = self.get_context_from_request(self.request)
-        object_list = super().get_queryset()
 
         ssr_subq = StatusSongRelation.objects.filter(status_id = OuterRef('id'))
-        movies_list = object_list.annotate(isanalyzed = Exists(ssr_subq))
+        movies_list = Status.objects.annotate(isanalyzed = Exists(ssr_subq))
 
         if not context['not_analyzed']:
             movies_list = movies_list.filter(isanalyzed = True)
 
-        if hasattr(context, 'tags'):
+        if 'tags' in context:
             movies_list = movies_list.filter(
                 idtag__tagname = context['tags']
             )
 
-        if hasattr(context, 'min_view') \
-            or hasattr(context, 'max_view') \
+        if 'min_view' in context\
+            or 'max_view' in context \
             or self.ordering in ['max_view', '-max_view']:
             movies_list = movies_list.annotate(
                 max_view = Max('chart__view')
             )
-        if hasattr(context, 'min_view'):
-            movies_list = movies_list.filter(max_view__gt = context['min_view'])
-        if hasattr(context, 'max_view'):
-            movies_list = movies_list.filter(max_view__lt = context['max_view'])
+        if 'min_view' in context:
+            movies_list = movies_list.filter(max_view__gte = context['min_view'])
+        if 'max_view' in context:
+            movies_list = movies_list.filter(max_view__lte = context['max_view'])
 
         return movies_list.order_by(context['sortby'])
 
 def detail(request, movie_id):
     movie = get_object_or_404(Status, id = movie_id)
-    chart = Chart.objects.filter(id = movie_id)
-    tags = Idtag.objects.filter(id = movie_id)
+    chart = Chart.objects.filter(status_id = movie_id)
+    tags = Idtag.objects.filter(status_id = movie_id)
     related = StatusSongRelation.objects.filter(
         status_id = movie_id
     ).prefetch_related(
@@ -104,5 +106,4 @@ def detail(request, movie_id):
 
 def detail_redirect(request):
     movie_id = request.GET.get('movie_id')
-    print(movie_id)
     return redirect('/movie/{}'.format(movie_id))

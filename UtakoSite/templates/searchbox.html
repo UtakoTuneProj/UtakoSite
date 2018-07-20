@@ -14,19 +14,15 @@
     <div class='form-row'>
       <div class="form-group col-md-3 offset-md-3 custom-control custom-checkbox">
         <input
-        type="hidden"
-        name="isanalyzed"
-        value="off">
-        <input
         type="checkbox"
         class="custom-control-input"
-        id="isanalyzed"
-        name="isanalyzed"
+        id="not_analyzed"
+        name="not_analyzed"
         style="position: static"
-        {% if isanalyzed %}
+        {% if not_analyzed is True %}
           checked
         {% endif %} >
-        <label class="custom-control-label" for="isanalyzed">解析された動画のみ表示する</label>
+        <label class="custom-control-label" for="not_analyzed">解析されていない動画も表示する</label>
       </div>
       <div class="form-group col-md-4">
         <select class="form-control" name="sortby">

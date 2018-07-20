@@ -1,61 +1,86 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Min, Max, Count, F, Exists, OuterRef
+from django.views.generic.list import ListView
 from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, StatusSongRelation
 
 # Create your views here.
-def index(request):
-    page = request.GET.get('page', default=1)
-    perpage = request.GET.get('perpage', default = 24)
-    sortby = request.GET.get('sortby', default = '-postdate')
-    tags = request.GET.get('tags')
-    isanalyzed = request.GET.get('isanalyzed', default = 'on')
-    min_view = request.GET.get('min_view', default = -1)
-    max_view = request.GET.get('max_view', default = -1)
+class IndexView(ListView):
+    model = Status
+    template_name = 'movie/index.html'
+    allow_empty = True
+    paginate_by = 24
+    ordering = '-postdate'
 
-    if min_view not in ('', None):
-        min_view = int(min_view)
-    else:
-        min_view = -1
-    if max_view not in ('', None):
-        max_view = int(max_view)
-    else:
-        max_view = -1
-    if sortby not in ['postdate', '-postdate', 'max_view', '-max_view']:
-        sortby = '-postdate'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.get_context_from_request(self.request))
+        return context
 
-    ssr_subq = StatusSongRelation.objects.filter(status_id = OuterRef('id'))
-    movies_list = Status.objects.annotate(isanalyzed = Exists(ssr_subq))
+    def get_context_from_request(self, request):
+        get_request = request.GET.get
+        context = {}
+        if get_request('min_view') not in ['', None]:
+            try:
+                context['min_view'] = int(get_request('min_view'))
+                if context['min_view'] < 0:
+                    del context['min_view']
+            except ValueError:
+                pass
 
-    if isanalyzed == 'on':
-        movies_list = movies_list.filter(isanalyzed = True)
+        if get_request('max_view') not in ['', None]:
+            try:
+                context['max_view'] = int(get_request('max_view'))
+                if context['max_view'] < 0:
+                    del context['max_view']
+            except ValueError:
+                pass
 
-    if tags not in ( '', None ):
-        movies_list = movies_list.filter(
-            idtag__tagname = tags
-        )
+        if get_request('sortby') in ['', None]:
+            context['sortby'] = self.ordering
+        else:
+            context['sortby'] = get_request('sortby')
+            if context['sortby'] not in ['postdate', '-postdate', 'max_view', '-max_view']:
+                raise ValueError
+        self.ordering = context['sortby']
 
-    if min_view >= 0 or max_view >= 0 or sortby == 'max_view' or sortby == '-max_view':
-        movies_list = movies_list.annotate(
-            max_view = Max('chart__view')
-        )
-    if min_view >= 0:
-        movies_list = movies_list.filter(max_view__gt = min_view)
-    if max_view >= 0:
-        movies_list = movies_list.filter(max_view__lt = max_view)
+        if get_request('not_analyzed') == 'on':
+            context['not_analyzed'] = True
+        else:
+            context['not_analyzed'] = False
 
-    movies_list = movies_list.order_by(sortby)
+        if get_request('perpage') not in ['', None]:
+            paginate_by = get_request('perpage')
 
-    movies = Paginator(movies_list, perpage).get_page(page)
-    return render(request, 'movie/index.html', {
-        'movies': movies,
-        'page': movies,
-        'tags': tags if tags is not None else '',
-        'max_view': max_view if max_view > 0 else '',
-        'min_view': min_view if min_view > 0 else '',
-        'isanalyzed': True if isanalyzed == 'on' else False,
-        'sortby': sortby
-    })
+        return context
+
+    def get_queryset(self):
+        context = self.get_context_from_request(self.request)
+        object_list = super().get_queryset()
+
+        ssr_subq = StatusSongRelation.objects.filter(status_id = OuterRef('id'))
+        movies_list = object_list.annotate(isanalyzed = Exists(ssr_subq))
+
+        if not context['not_analyzed']:
+            movies_list = movies_list.filter(isanalyzed = True)
+
+        if hasattr(context, 'tags'):
+            movies_list = movies_list.filter(
+                idtag__tagname = context['tags']
+            )
+
+        if hasattr(context, 'min_view') \
+            or hasattr(context, 'max_view') \
+            or self.ordering in ['max_view', '-max_view']:
+            movies_list = movies_list.annotate(
+                max_view = Max('chart__view')
+            )
+        if hasattr(context, 'min_view'):
+            movies_list = movies_list.filter(max_view__gt = context['min_view'])
+        if hasattr(context, 'max_view'):
+            movies_list = movies_list.filter(max_view__lt = context['max_view'])
+
+        return movies_list.order_by(context['sortby'])
 
 def detail(request, movie_id):
     movie = get_object_or_404(Status, id = movie_id)

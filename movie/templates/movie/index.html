@@ -9,7 +9,7 @@
   {% include "paginator.html" %}
 
   <div class='row'>
-  {% for movie in movies %}
+  {% for movie in page_obj %}
     <div class='col-lg-4 col-md-6 my-3'>
       <div class="embed_thumbnail">
         <iframe width="320" height="125" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">

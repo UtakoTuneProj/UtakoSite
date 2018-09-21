@@ -17,6 +17,19 @@
     </div>
   </div>
 
+  <!-- Ads -->
+  <div class="row my-4">
+    <div class="col">
+      <p class="text-secondary text-center">スポンサーリンク</p>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "{{ google_ad_client }}",
+      enable_page_level_ads: true
+      });</script>
+    </div>
+  </div>
+
+
   <div class="row">
     <div class="col-12 mt-3">
       <h3>似てるかも</h3>
@@ -37,6 +50,19 @@
     {% endfor %}
   </div>
 
+  <!-- Ads -->
+  <div class="row my-4">
+    <div class="col">
+      <p class="text-secondary text-center">スポンサーリンク</p>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "{{ google_ad_client }}",
+      enable_page_level_ads: true
+      });</script>
+    </div>
+  </div>
+
+
   <div class="row">
     <div class="col-12 mt-3">
       <h3>解析情報</h3>
@@ -45,7 +71,7 @@
           <tr>
             <td> 動画ID </td>
             <td> 投稿日時 </td>
-            <td> エポック数 </td> 
+            <td> エポック数 </td>
             <td> 正当性 </td>
             <td> 完了 </td>
           </tr>
@@ -88,7 +114,7 @@
           <tr>
             <td> epoch </td>
             <td> views </td>
-            <td> comments </td> 
+            <td> comments </td>
             <td> mylists </td>
           </tr>
         </thead>
@@ -105,5 +131,5 @@
       </table>
     </div>
   </div>
-  
+
 {% endblock content %}

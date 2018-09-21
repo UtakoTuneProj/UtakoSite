@@ -17,4 +17,3 @@ class AnalyzeQueue(models.Model):
 
     class Meta:
         db_table = 'analyze_queue'
-

@@ -6,4 +6,3 @@ class SongRelation(models.Model):
 
     class Meta:
         db_table = 'song_relation'
-

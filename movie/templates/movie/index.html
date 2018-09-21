@@ -5,11 +5,24 @@
 {% endblock title %}
 
 {% block content %}
+
+  <!-- Ads -->
+  <div class="row my-4">
+    <div class="col">
+      <p class="text-secondary text-center">スポンサーリンク</p>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "{{ google_ad_client }}",
+      enable_page_level_ads: true
+      });</script>
+    </div>
+  </div>
+
   {% include "searchbox.html" %}
   {% include "paginator.html" %}
 
   <div class='row'>
-  {% for movie in movies %}
+  {% for movie in page_obj %}
     <div class='col-lg-4 col-md-6 my-3'>
       <div class="embed_thumbnail">
         <iframe width="320" height="125" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
@@ -28,4 +41,17 @@
   </div>
 
   {% include "paginator.html" %}
+
+  <!-- Ads -->
+  <div class="row my-4">
+    <div class="col">
+      <p class="text-secondary text-center">スポンサーリンク</p>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "{{ google_ad_client }}",
+      enable_page_level_ads: true
+      });</script>
+    </div>
+  </div>
+
 {% endblock content %}

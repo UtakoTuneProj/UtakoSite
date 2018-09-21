@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}
-ABOUT
+人工知能による、新しい音楽体験。
 {% endblock title %}
 
 {% block extra_css %}
@@ -67,12 +67,7 @@ ABOUT
     <div class="container">
       <div class="row my-4">
         <div class="col">
-          <p class="text-secondary text-center">スポンサーリンク</p>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-          <script>(adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: "{{ google_ad_client }}",
-          enable_page_level_ads: true
-          });</script>
+          {% include "ads.html" %}
         </div>
       </div>
     </div>
@@ -132,12 +127,7 @@ ABOUT
   <div class="container">
     <div class="row my-4">
       <div class="col">
-        <p class="text-secondary text-center">スポンサーリンク</p>
-        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "{{ google_ad_client }}",
-        enable_page_level_ads: true
-        });</script>
+        {% include "ads.html" %}
       </div>
     </div>
   </div>
@@ -186,12 +176,7 @@ ABOUT
     <!-- Ads -->
       <div class="row">
         <div class="col my-4">
-          <p class="text-secondary text-center">スポンサーリンク</p>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-          <script>(adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: "{{ google_ad_client }}",
-          enable_page_level_ads: true
-          });</script>
+          {% include "ads.html" %}
         </div>
       </div>
 

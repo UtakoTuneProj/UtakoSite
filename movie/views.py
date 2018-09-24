@@ -111,12 +111,10 @@ class IndexView(ListView):
 
     def get_queryset(self):
         context = self.get_context_from_request(self.request)
-
-        ssr_subq = StatusSongRelation.objects.filter(status_id = OuterRef('id'))
-        movies_list = Status.objects.annotate(isanalyzed = Exists(ssr_subq))
+        movies_list = Status.objects
 
         if not context['not_analyzed']:
-            movies_list = movies_list.filter(isanalyzed = True)
+            movies_list = movies_list.analyzed()
 
         if 'tags' in context:
             movies_list = movies_list.filter(

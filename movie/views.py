@@ -7,6 +7,44 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from xml.etree import ElementTree
 
+def parse_nicoapi(movie_id):
+    def no_response():
+        return {
+            'title': 'NOT FOUND',
+            'thumbnail_url': None,
+            'view_counter': '---',
+            'mylist_counter': '---',
+            'comment_num': '---',
+            'user_nickname': '---',
+        }
+
+    ret = {}
+    req = Request(
+        "http://ext.nicovideo.jp/api/getthumbinfo/" + movie_id
+    )
+    try:
+        with urlopen(req) as response:
+            root = ElementTree.fromstring(response.read())
+    except HTTPError:
+        ret.update(no_response())
+    else:
+        if root.get('status') == 'ok':
+            for child in root[0]:
+                if child.tag == 'tags':
+                    ret['tags'] = [x.text for x in child]
+                elif child.tag in [
+                    "mylist_counter",
+                    "comment_num",
+                    "view_counter"
+                ]:
+                    ret[child.tag] = int(child.text)
+                else:
+                    ret[child.tag] = child.text
+        else:
+            ret.update(no_response())
+
+    return ret
+
 # Create your views here.
 class IndexView(ListView):
     model = Status
@@ -18,7 +56,7 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.get_context_from_request(self.request))
-        context.update(self.get_context_from_nicoapi(context['page_obj']))
+        context.update(self.refer_from_nicoapi(context['page_obj']))
         return context
 
     def get_context_from_request(self, request):
@@ -61,52 +99,12 @@ class IndexView(ListView):
 
         return context
 
-    def get_context_from_nicoapi(self, page_obj):
-        def no_response():
-            return {
-                'title': 'NOT FOUND',
-                'thumbnail_url': None,
-                'view_counter': '---',
-                'mylist_counter': '---',
-                'comment_num': '---',
-                'user_nickname': '---',
-            }
-
+    def refer_from_nicoapi(self, page_obj):
         context = {'card_content': []}
         for movie in page_obj:
-            ret = {}
+            ret = parse_nicoapi(movie.id)
             ret['movie'] = movie
-
-            req = Request(
-                "http://ext.nicovideo.jp/api/getthumbinfo/" + movie.id
-            )
-            try:
-                with urlopen(req) as response:
-                    root = ElementTree.fromstring(response.read())
-            except HTTPError:
-                ret.update(no_response())
-                context['card_content'].append(ret)
-                continue
-
-            if root.get('status') != 'ok':
-                ret.update(no_response())
-                context['card_content'].append(ret)
-                continue
-
-            for child in root[0]:
-                if child.tag == 'tags':
-                    ret['tags'] = [x.text for x in child]
-                elif child.tag in [
-                    "mylist_counter",
-                    "comment_num",
-                    "view_counter"
-                ]:#一部を数値に変換
-                    ret[child.tag] = int(child.text)
-                else:
-                    ret[child.tag] = child.text
-
             context['card_content'].append(ret)
-
         return context
 
     def get_queryset(self):
@@ -146,12 +144,20 @@ def detail(request, movie_id):
         destination = F('song_relation__statussongrelation__status_id')
     ).exclude(
         destination = movie_id
-        ).order_by('song_relation__distance')[:12]
+    ).order_by('song_relation__distance')[:12]
+
+    card_content = []
+    for rel_movie in related:
+        ret = parse_nicoapi(rel_movie.destination)
+        ret['movie'] = Status.objects.get(id=rel_movie.destination)
+        card_content.append(ret)
+
     return render( request, 'movie/detail.html', {
         'movie': movie,
         'chart': chart,
         'tags': tags,
         'related': related,
+        'card_content': card_content,
     })
 
 def detail_redirect(request):

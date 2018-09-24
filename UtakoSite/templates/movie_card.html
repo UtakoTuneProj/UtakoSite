@@ -1,0 +1,43 @@
+{% load static %}
+<div class='col-lg-3 col-md-4 col-6 my-3'>
+  <a href="/movie/{{card.movie.id}}">
+  <div class="card">
+    <img class="card-img-top" src="
+    {% if card.thumbnail_url %}
+      {{card.thumbnail_url}}
+    {% else %}
+      {% static "img/thumbnail_not_found.png" %}
+    {% endif %}
+    ">
+    <div class="card-body text-secondary">
+      <p>{{card.title}}</p>
+      <table class="table table-sm">
+        <tbody>
+          <tr>
+            <th><i class="icon-user"></i></th>
+            <td>{{card.user_nickname}}</td>
+          </tr><tr>
+            <th><i class="icon-eye"></i></th>
+            <td>{{card.view_counter}}</td>
+          </tr><tr>
+            <th><i class="icon-bubble"></i></th>
+            <td>{{card.comment_num}}</td>
+          </tr><tr>
+            <th><i class="icon-star"></i></th>
+            <td>{{card.mylist_counter}}</td>
+          </tr><tr>
+            <th><i class="icon-energy"></i></th>
+            <td>
+              {% if card.movie.isanalyzed %}
+              <span class="text-success">解析済</span>
+              {% else %}
+              <span class="text-secondary">未解析</span>
+              {% endif %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </a>
+</div>

@@ -3,6 +3,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Min, Max, Count, F, Exists, OuterRef
 from django.views.generic.list import ListView
 from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, StatusSongRelation
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError
+from xml.etree import ElementTree
 
 # Create your views here.
 class IndexView(ListView):
@@ -15,6 +18,7 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.get_context_from_request(self.request))
+        context.update(self.get_context_from_nicoapi(context['page_obj']))
         return context
 
     def get_context_from_request(self, request):
@@ -54,6 +58,54 @@ class IndexView(ListView):
 
         if get_request('perpage') not in ['', None]:
             self.paginate_by = get_request('perpage')
+
+        return context
+
+    def get_context_from_nicoapi(self, page_obj):
+        def no_response():
+            return {
+                'title': 'NOT FOUND',
+                'thumbnail_url': None,
+                'view_counter': '---',
+                'mylist_counter': '---',
+                'comment_num': '---',
+                'user_nickname': '---',
+            }
+
+        context = {'card_content': []}
+        for movie in page_obj:
+            ret = {}
+            ret['movie'] = movie
+
+            req = Request(
+                "http://ext.nicovideo.jp/api/getthumbinfo/" + movie.id
+            )
+            try:
+                with urlopen(req) as response:
+                    root = ElementTree.fromstring(response.read())
+            except HTTPError:
+                ret.update(no_response())
+                context['card_content'].append(ret)
+                continue
+
+            if root.get('status') != 'ok':
+                ret.update(no_response())
+                context['card_content'].append(ret)
+                continue
+
+            for child in root[0]:
+                if child.tag == 'tags':
+                    ret['tags'] = [x.text for x in child]
+                elif child.tag in [
+                    "mylist_counter",
+                    "comment_num",
+                    "view_counter"
+                ]:#一部を数値に変換
+                    ret[child.tag] = int(child.text)
+                else:
+                    ret[child.tag] = child.text
+
+            context['card_content'].append(ret)
 
         return context
 

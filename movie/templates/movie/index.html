@@ -17,21 +17,8 @@
   {% include "paginator.html" %}
 
   <div class='row'>
-  {% for movie in page_obj %}
-    <div class='col-lg-4 col-md-6 my-3'>
-      <div class="embed_thumbnail">
-        <iframe width="320" height="125" src="https://ext.nicovideo.jp/thumb/{{movie.id}}" scrolling="no" style="border:solid 1px #ccc;" frameborder="0">
-        </iframe>
-      </div>
-      <a href="{{movie.id}}" class="btn {% if movie.isanalyzed %}btn-outline-primary{% else %}btn-outline-secondary{% endif %} btn-lg col-12">
-      {{movie.id}}
-      {% if movie.isanalyzed %}
-        解析済
-      {% else %}
-        未解析
-      {% endif %}
-      </a>
-    </div>
+  {% for card in card_content %}
+  {% include "movie_card.html" %}
   {% endfor %}
   </div>
 

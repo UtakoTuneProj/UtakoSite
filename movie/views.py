@@ -6,6 +6,7 @@ from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, Sta
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from xml.etree import ElementTree
+from datetime import datetime as dt
 
 def parse_nicoapi(movie_id):
     def no_response():
@@ -16,6 +17,7 @@ def parse_nicoapi(movie_id):
             'mylist_counter': '---',
             'comment_num': '---',
             'user_nickname': '---',
+            'first_retrieve': '---',
         }
 
     ret = {}
@@ -38,6 +40,8 @@ def parse_nicoapi(movie_id):
                     "view_counter"
                 ]:
                     ret[child.tag] = int(child.text)
+                elif child.tag == 'first_retrieve':
+                    ret[child.tag] = dt.strptime(child.text, '%Y-%m-%dT%H:%M:%S+09:00')
                 else:
                     ret[child.tag] = child.text
         else:

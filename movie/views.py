@@ -3,6 +3,51 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Min, Max, Count, F, Exists, OuterRef
 from django.views.generic.list import ListView
 from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, StatusSongRelation
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError
+from xml.etree import ElementTree
+from datetime import datetime as dt
+
+def parse_nicoapi(movie_id):
+    def no_response():
+        return {
+            'title': 'NOT FOUND',
+            'thumbnail_url': None,
+            'view_counter': '---',
+            'mylist_counter': '---',
+            'comment_num': '---',
+            'user_nickname': '---',
+            'first_retrieve': '---',
+        }
+
+    ret = {}
+    req = Request(
+        "http://ext.nicovideo.jp/api/getthumbinfo/" + movie_id
+    )
+    try:
+        with urlopen(req) as response:
+            root = ElementTree.fromstring(response.read())
+    except HTTPError:
+        ret.update(no_response())
+    else:
+        if root.get('status') == 'ok':
+            for child in root[0]:
+                if child.tag == 'tags':
+                    ret['tags'] = [x.text for x in child]
+                elif child.tag in [
+                    "mylist_counter",
+                    "comment_num",
+                    "view_counter"
+                ]:
+                    ret[child.tag] = int(child.text)
+                elif child.tag == 'first_retrieve':
+                    ret[child.tag] = dt.strptime(child.text, '%Y-%m-%dT%H:%M:%S+09:00')
+                else:
+                    ret[child.tag] = child.text
+        else:
+            ret.update(no_response())
+
+    return ret
 
 # Create your views here.
 class IndexView(ListView):
@@ -15,6 +60,7 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.get_context_from_request(self.request))
+        context.update(self.refer_from_nicoapi(context['page_obj']))
         return context
 
     def get_context_from_request(self, request):
@@ -57,14 +103,20 @@ class IndexView(ListView):
 
         return context
 
+    def refer_from_nicoapi(self, page_obj):
+        context = {'card_content': []}
+        for movie in page_obj:
+            ret = parse_nicoapi(movie.id)
+            ret['movie'] = movie
+            context['card_content'].append(ret)
+        return context
+
     def get_queryset(self):
         context = self.get_context_from_request(self.request)
-
-        ssr_subq = StatusSongRelation.objects.filter(status_id = OuterRef('id'))
-        movies_list = Status.objects.annotate(isanalyzed = Exists(ssr_subq))
+        movies_list = Status.objects
 
         if not context['not_analyzed']:
-            movies_list = movies_list.filter(isanalyzed = True)
+            movies_list = movies_list.analyzed()
 
         if 'tags' in context:
             movies_list = movies_list.filter(
@@ -96,12 +148,20 @@ def detail(request, movie_id):
         destination = F('song_relation__statussongrelation__status_id')
     ).exclude(
         destination = movie_id
-        ).order_by('song_relation__distance')[:12]
+    ).order_by('song_relation__distance')[:12]
+
+    card_content = []
+    for rel_movie in related:
+        ret = parse_nicoapi(rel_movie.destination)
+        ret['movie'] = Status.objects.get(id=rel_movie.destination)
+        card_content.append(ret)
+
     return render( request, 'movie/detail.html', {
         'movie': movie,
         'chart': chart,
         'tags': tags,
         'related': related,
+        'card_content': card_content,
     })
 
 def detail_redirect(request):

@@ -23,6 +23,8 @@ else:
     from .secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
     from .secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS
     from .secrets import STATIC_URL
+    from .secrets import SOCIAL_AUTH_TWITTER_KEY, SOCIAL_AUTH_TWITTER_SECRET
+    from .secrets import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +64,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'UtakoSite.urls'
 
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -72,6 +81,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
                 'UtakoSite.context_processors.google_ad_client.google_ad_client',
                 'UtakoSite.context_processors.google_analytics.google_analytics',
                 'UtakoSite.context_processors.isdebug.isdebug',
@@ -159,3 +170,4 @@ if DEBUG:
 
 LOGIN_URL = 'register:login'
 LOGIN_REDIRECT_URL = 'movie:index'
+SOCIAL_AUTH_URL_NAMESPACE = 'social'

@@ -10,7 +10,7 @@
     <div class="card-body">
       {% if form.errors %}
         <div class="alert alert-danger" role="alert">
-          <p>アカウント名かパスワードが一致しません．</p>
+          アカウント名かパスワードが一致しません．
         </div>
       {% endif %}
       {% if next %}
@@ -26,6 +26,9 @@
 
       <form method="post" action="{% url 'register:login' %}" >
         {% csrf_token %}
+        <a href="{% url "social:begin" "google-oauth2" %}"><div class="btn btn-primary col-12 my-2">Googleでログイン</div></a>
+        <a href="{% url "social:begin" "twitter" %}"><div class="btn btn-primary col-12 my-2">Twitterでログイン</div></a>
+        <hr>
         <div class="form-group">
           {{form.username.label_tag}}
           {{form.username}}

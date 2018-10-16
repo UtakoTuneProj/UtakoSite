@@ -1,15 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}
-ABOUT
+人工知能による、新しい音楽体験。
 {% endblock title %}
 
 {% block extra_css %}
-    <!-- Custom fonts for this template -->
-    <link href="{% static 'startbootstrap-landing-page/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'startbootstrap-landing-page/vendor/simple-line-icons/css/simple-line-icons.css' %}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-
     <!-- Custom styles for this template -->
     <link href="{% static 'startbootstrap-landing-page/css/landing-page.min.css' %}" rel="stylesheet">
 {% endblock %}
@@ -63,6 +58,15 @@ ABOUT
       </div>
     </section>
 
+    <!-- Ads -->
+    <div class="container">
+      <div class="row my-4">
+        <div class="col">
+          {% include "ads.html" %}
+        </div>
+      </div>
+    </div>
+
   <!-- About Section -->
     <section class="showcase">
       <div class="container-fluid p-0">
@@ -114,6 +118,15 @@ ABOUT
     </div>
   </section>
 
+  <!-- Ads -->
+  <div class="container">
+    <div class="row my-4">
+      <div class="col">
+        {% include "ads.html" %}
+      </div>
+    </div>
+  </div>
+
   <!-- Call to Action -->
   <section class="call-to-action text-white text-center">
     <div class="overlay"></div>
@@ -154,6 +167,14 @@ ABOUT
           </ul>
         </div>
       </div>
+
+    <!-- Ads -->
+      <div class="row">
+        <div class="col my-4">
+          {% include "ads.html" %}
+        </div>
+      </div>
+
     </div>
   </section>
 {% endblock body %}

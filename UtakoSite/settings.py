@@ -11,10 +11,18 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-from .secrets import SECRET_KEY, DATABASES
-from .secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
-from .secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS
-from .secrets import STATIC_URL
+import sys
+
+if sys.argv[1:2] == ['test'] or 'pytest' in sys.argv[0]:
+    from .test_secrets import SECRET_KEY, DATABASES
+    from .test_secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
+    from .test_secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS
+    from .test_secrets import STATIC_URL
+else:
+    from .secrets import SECRET_KEY, DATABASES
+    from .secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
+    from .secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS
+    from .secrets import STATIC_URL
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

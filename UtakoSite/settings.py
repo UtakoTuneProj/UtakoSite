@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -173,4 +174,5 @@ if DEBUG:
 
 LOGIN_URL = 'register:login'
 LOGIN_REDIRECT_URL = 'movie:index'
+SOCIAL_AUTH_LOGIN_ERROR_URL = 'register:login'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'

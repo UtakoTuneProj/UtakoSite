@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
+    'django_registration',
 ]
 
 MIDDLEWARE = [
@@ -176,3 +177,4 @@ LOGIN_URL = 'register:login'
 LOGIN_REDIRECT_URL = 'movie:index'
 SOCIAL_AUTH_LOGIN_ERROR_URL = 'register:login'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
+ACCOUNT_ACTIVATION_DAYS = 1

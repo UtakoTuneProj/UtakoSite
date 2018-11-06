@@ -1,7 +1,7 @@
 {% extends "appbase.html" %}
 
 {% block title %}
-  LOGIN
+  新規登録
 {% endblock %}
 
 {% block content %}
@@ -15,37 +15,32 @@
           {% endfor %}
         </div>
       {% endif %}
-      {% if next %}
-        <div class="alert alert-danger" role="alert">
-          {% if user.is_authenticated %}
-          <p>このページへのアクセス権限が足りません．このページへのアクセス権を所有する
-          アカウントでログインしてください．</p>
-          {% else %}
-          <p>この機能を利用するためにはログインが必要です．</p>
-          {% endif %}
-        </div>
-      {% endif %}
 
       <div class="my-2">
-        <form method="post" action="{% url 'register:login' %}">
+        <form method="post" action="{% url 'register:register' %}">
           {% csrf_token %}
           <div class="form-group">
             {{form.username.label_tag}}
             {{form.username}}
           </div>
           <div class="form-group">
-            {{form.password.label_tag}}
-            {{form.password}}
+            {{form.email.label_tag}}
+            {{form.email}}
           </div>
-          <input type="submit" class="btn btn-primary float-right my-2" value="ログイン" />
+          <div class="form-group">
+            {{form.password1.label_tag}}
+            {{form.password1}}
+          </div>
+          <div class="form-group">
+            {{form.password2.label_tag}}
+            {{form.password2}}
+          </div>
+          <input type="submit" class="btn btn-primary float-right my-2" value="登録" />
           <input type="hidden" name="next" value="{{ next }}" />
-          <a href="{% url "register:password_reset" %}">パスワードを忘れました</a>
         </form>
       </div>
       <a href="{% url "social:begin" "google-oauth2" %}"><div class="btn btn-primary col-12 my-2">Googleでログイン</div></a>
       <a href="{% url "social:begin" "twitter" %}"><div class="btn btn-primary col-12 my-2">Twitterでログイン</div></a>
-      <hr>
-      <a href="{% url "register:register" %}"><div class="btn btn-primary col-12 my-2">新規登録</div></a>
     </div>
   </div>
 </div>

@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
+from django_registration.forms import RegistrationFormUniqueEmail
 
 class LoginForm(AuthenticationForm):
 
@@ -9,6 +10,13 @@ class LoginForm(AuthenticationForm):
             field.widget.attrs['placeholder'] = field.label
 
 class ResetPasswordForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['placeholder'] = field.label
+
+class UtakoRegistrationForm(RegistrationFormUniqueEmail):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():

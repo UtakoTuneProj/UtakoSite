@@ -1,0 +1,10 @@
+{{user.username}} さま
+
+UTAKO TUNE( {{scheme}}://{{site}}/ )へのご登録ありがとうございます。
+
+これがあなたの行った操作である場合、 {{scheme}}://{{site}}/auth/activate/?activation_key={{activation_key}} からメールアドレスの確認を行ってください。
+そうではない場合、無視していただいて構いません。
+
+なお、操作が{{expiration_days}}日以内に行われない場合、上記のURLは無効となります。
+
+これからUTAKO TUNEをよろしくお願いいたします。

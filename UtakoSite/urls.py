@@ -26,7 +26,6 @@ urlpatterns = [
     path('auth/', include('register.urls')),
     path('pages/', include('django.contrib.flatpages.urls')),
     path('', include('social_django.urls', namespace='social')),
-    path('', include('django.contrib.auth.urls')),
     re_path('^$', views.flatpage, {'url': 'index/'})
 ]
 

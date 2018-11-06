@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView
 from django.views import generic
+from django_registration.backends.activation.views import RegistrationView, ActivationView
+from django.urls import reverse_lazy
 
-from .forms import LoginForm, ResetPasswordForm
+from .forms import LoginForm, ResetPasswordForm, UtakoRegistrationForm
 
 class Login(LoginView):
     form_class = LoginForm
@@ -21,3 +23,17 @@ class PasswordReset(PasswordResetView):
 class PasswordResetDone(PasswordResetDoneView):
     form_class = ResetPasswordForm
     template_name = 'register/password_reset_done.html'
+
+class Registration(RegistrationView):
+    form_class = UtakoRegistrationForm
+    template_name = 'register/register.html'
+    email_body_template = 'register/activation_email.txt'
+    email_subject_template = 'register/activation_email_subject.txt'
+    disallowed_url = reverse_lazy('register:register')
+    success_url = reverse_lazy('register:login')
+
+class Activation(ActivationView):
+    template_name = 'register/activation_failed.html'
+    success_url = reverse_lazy('register:login')
+    def activate(self, request, *args, **kwargs):
+        return super().activate(request, activation_key = request.GET.get('activation_key'))

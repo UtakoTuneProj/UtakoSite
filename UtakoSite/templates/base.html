@@ -46,10 +46,10 @@
             <a href="#" class='nav-item nav-link disabled'>Player</a>
             <a href="#" class='nav-item nav-link disabled'>VOCALOSPHERE</a>
             {% if user.is_authenticated %}
-              <a href="#" class='nav-item nav-link disabled'>UserPage</a>
-              <a href="/auth/logout" class='nav-item nav-link'>SignOut</a>
+              <a href="/mypage/" class='nav-item nav-link'>UserPage</a>
+              <a href="/auth/logout/" class='nav-item nav-link'>SignOut</a>
             {% else %}
-              <a href="/auth/login" class='nav-item nav-link'>SignIn</a>
+              <a href="/auth/login/" class='nav-item nav-link'>SignIn</a>
             {% endif %}
           </ul>
         </div>

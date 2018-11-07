@@ -24,6 +24,7 @@ urlpatterns = [
     path('movie/', include('movie.urls')),
     path('tag/', include('tag.urls')),
     path('auth/', include('register.urls')),
+    path('mypage/', include('mypage.urls')),
     path('pages/', include('django.contrib.flatpages.urls')),
     path('', include('social_django.urls', namespace='social')),
     re_path('^$', views.flatpage, {'url': 'index/'})

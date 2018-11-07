@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'movie.apps.MovieConfig',
     'tag.apps.TagConfig',
     'register.apps.RegisterConfig',
+    'mypage.apps.MypageConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

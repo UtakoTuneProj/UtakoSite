@@ -1,10 +1,25 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.contrib.auth.views import (
+    LoginView,
+    LogoutView,
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView,
+    PasswordChangeView,
+    PasswordChangeDoneView,
+)
 from django.views import generic
 from django_registration.backends.activation.views import RegistrationView, ActivationView
 from django.urls import reverse_lazy
 
-from .forms import LoginForm, ResetPasswordForm, UtakoRegistrationForm, ResetPasswordConfirmForm
+from .forms import (
+    LoginForm,
+    ResetPasswordForm,
+    UtakoRegistrationForm,
+    ResetPasswordConfirmForm,
+    ChangePasswordForm,
+)
 
 class Login(LoginView):
     form_class = LoginForm
@@ -18,7 +33,7 @@ class PasswordReset(PasswordResetView):
     template_name = 'register/password_reset.html'
     email_template_name = 'register/password_reset_email.html'
     subject_template_name = 'register/password_reset_subject.html'
-    success_url = '/auth/password_reset/done'
+    success_url = reverse_lazy( 'register:password_reset_done' )
 
 class PasswordResetDone(PasswordResetDoneView):
     template_name = 'register/password_reset_done.html'
@@ -30,6 +45,14 @@ class PasswordResetConfirm(PasswordResetConfirmView):
 
 class PasswordResetComplete(PasswordResetCompleteView):
     template_name = 'register/password_reset_complete.html'
+
+class PasswordChange(PasswordChangeView):
+    form_class = ChangePasswordForm
+    template_name = 'register/password_change.html'
+    success_url = reverse_lazy( 'register:password_change_done' )
+
+class PasswordChangeDone(PasswordChangeDoneView):
+    template_name = 'register/password_change_done.html'
 
 class Registration(RegistrationView):
     form_class = UtakoRegistrationForm

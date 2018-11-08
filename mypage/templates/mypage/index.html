@@ -1,0 +1,19 @@
+{% extends "appbase.html" %}
+
+{% block title %}
+  マイページ
+{% endblock %}
+
+{% block content %}
+<div class='row no-gutters'>
+  <div class="card my-5 col-lg-6 offset-lg-3">
+    <div class="card-header">
+      {{user.username}}さんのマイページ
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><a href="{% url 'register:password_change' %}">パスワードの変更</a></li>
+    </ul>
+  </div>
+</div>
+
+{% endblock %}

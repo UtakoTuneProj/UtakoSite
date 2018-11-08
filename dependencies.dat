@@ -3,3 +3,5 @@ mysqlclient
 gunicorn
 django-debug-toolbar
 pytest-django
+social-auth-app-django
+django-registration

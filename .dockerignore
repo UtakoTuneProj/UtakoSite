@@ -1,4 +1,3 @@
 .git/
 collect_static/
 static/
-secrets.py

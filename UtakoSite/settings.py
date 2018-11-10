@@ -20,7 +20,7 @@ if sys.argv[1:2] == ['test'] or 'pytest' in sys.argv[0]:
     from .test_secrets import STATIC_URL
 else:
     from .secrets import SECRET_KEY, DATABASES
-    from .secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
+    from .secrets import ALLOWED_HOSTS, DEBUG
     from .secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS
     from .secrets import STATIC_URL
     from .secrets import SOCIAL_AUTH_TWITTER_KEY, SOCIAL_AUTH_TWITTER_SECRET
@@ -173,6 +173,7 @@ if DEBUG:
     }
 
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    INTERNAL_IPS = ['127.0.0.1']
 
 LOGIN_URL = 'register:login'
 LOGIN_REDIRECT_URL = 'movie:index'

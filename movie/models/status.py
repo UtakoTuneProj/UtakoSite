@@ -31,8 +31,7 @@ class Status(models.Model):
     @property
     def isanalyzed(self):
         from .status_song_relation import StatusSongRelation
-        ssr_subq = StatusSongRelation.objects.filter(status_id = self.id)
-        return True if ssr_subq.count() > 0 else False
+        return StatusSongRelation.objects.filter(status_id = self.id).exists()
 
     objects = StatusManager()
 

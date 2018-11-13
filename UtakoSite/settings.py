@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'tag.apps.TagConfig',
     'register.apps.RegisterConfig',
     'mypage.apps.MypageConfig',
+    'api.apps.ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',
     'django_registration',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -180,3 +182,11 @@ LOGIN_REDIRECT_URL = 'movie:index'
 SOCIAL_AUTH_LOGIN_ERROR_URL = 'register:login'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 ACCOUNT_ACTIVATION_DAYS = 1
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSON_CLASSES': [
+        'rest_framework.permissons.DjangoModelPermissonsOrAnonReadOnly'
+        ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
+    }

@@ -11,7 +11,7 @@ from .status import Status
 
 class SongIndex(models.Model):
     id = models.AutoField(primary_key=True)
-    status = models.ForeignKey(Status, on_delete = models.CASCADE, max_length=12, default="UNKNOWN")  # Field name made lowercase.
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, related_name='song_index', max_length=12, default="UNKNOWN")  # Field name made lowercase.
     value0 = models.FloatField()
     value1 = models.FloatField()
     value2 = models.FloatField()

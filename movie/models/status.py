@@ -16,9 +16,7 @@ class StatusManager(Manager):
     use_for_related_fields = True
 
     def analyzed(self, **kwargs):
-        from .status_song_relation import StatusSongRelation
-        ssr_subq = StatusSongRelation.objects.filter(status_id = OuterRef('id'))
-        return Status.objects.annotate(_isanalyzed = Exists(ssr_subq)).filter(_isanalyzed = True, **kwargs)
+        return Status.objects.filter(song_index__isnull = False, **kwargs)
 
 class Status(models.Model):
     id = models.CharField(db_column='ID', primary_key=True, max_length=12)  # Field name made lowercase.
@@ -30,8 +28,7 @@ class Status(models.Model):
 
     @property
     def isanalyzed(self):
-        from .status_song_relation import StatusSongRelation
-        return StatusSongRelation.objects.filter(status_id = self.id).exists()
+        return self.statussongrelation_set.exists()
 
     objects = StatusManager()
 

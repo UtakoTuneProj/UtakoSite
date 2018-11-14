@@ -61,14 +61,11 @@ class MovieIndexMixIn():
         if 'min_view' in context\
             or 'max_view' in context \
             or context['sortby'] in ['max_view', '-max_view']:
-            subquery = Chart.objects.values(
-                'status_id'
-            ).annotate(
+            objects = objects.annotate(
                 max_view = Max('chart__view')
             )
         if 'min_view' in context:
-            subquery.filter(max_view__gte = content['min_view'])
-            objects = objects.filter(subq)
+            objects = objects.filter(max_view__gte = context['min_view'])
         if 'max_view' in context:
             objects = objects.filter(max_view__lte = context['max_view'])
 

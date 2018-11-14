@@ -48,23 +48,36 @@ def parse_nicoapi(movie_id):
 
     return ret
 
-# Create your views here.
-class IndexView(ListView):
-    model = Status
-    template_name = 'movie/index.html'
-    allow_empty = True
-    paginate_by = 24
-    ordering = '-postdate'
+class MovieIndexMixIn():
+    def _get_queryset(self, objects, context):
+        if not context['not_analyzed']:
+            objects = objects.analyzed()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update(self.get_context_from_request(self.request))
-        context.update(self.refer_from_nicoapi(context['page_obj']))
-        return context
+        if 'tags' in context:
+            objects = objects.filter(
+                idtag__tagname = context['tags']
+            )
+
+        if 'min_view' in context\
+            or 'max_view' in context \
+            or context['sortby'] in ['max_view', '-max_view']:
+            subquery = Chart.objects.values(
+                'status_id'
+            ).annotate(
+                max_view = Max('chart__view')
+            )
+        if 'min_view' in context:
+            subquery.filter(max_view__gte = content['min_view'])
+            objects = objects.filter(subq)
+        if 'max_view' in context:
+            objects = objects.filter(max_view__lte = context['max_view'])
+
+        return objects.order_by(context['sortby']).prefetch_related('statussongrelation_set', 'songindex_set')
 
     def get_context_from_request(self, request):
         get_request = request.GET.get
         context = {}
+        ordering = '-postdate'
         if get_request('min_view') not in ['', None]:
             try:
                 context['min_view'] = int(get_request('min_view'))
@@ -82,14 +95,13 @@ class IndexView(ListView):
                 pass
 
         if get_request('sortby') in ['', None]:
-            context['sortby'] = self.ordering
+            context['sortby'] = ordering
         else:
             context['sortby'] = get_request('sortby')
             if context['sortby'] not in ['postdate', '-postdate', 'max_view', '-max_view']:
                 raise ValueError
-        self.ordering = context['sortby']
 
-        if get_request('not_analyzed') == 'on':
+        if get_request('not_analyzed') in ( '1', 'on' ):
             context['not_analyzed'] = True
         else:
             context['not_analyzed'] = False
@@ -110,30 +122,24 @@ class IndexView(ListView):
             context['card_content'].append(ret)
         return context
 
+# Create your views here.
+class IndexView(ListView, MovieIndexMixIn):
+    model = Status
+    template_name = 'movie/index.html'
+    allow_empty = True
+    paginate_by = 24
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(super().get_context_from_request(self.request))
+        context.update(super().refer_from_nicoapi(context['page_obj']))
+        return context
+
     def get_queryset(self):
-        context = self.get_context_from_request(self.request)
-        movies_list = Status.objects
+        context = super().get_context_from_request(self.request)
+        objects = Status.objects
 
-        if not context['not_analyzed']:
-            movies_list = movies_list.analyzed()
-
-        if 'tags' in context:
-            movies_list = movies_list.filter(
-                idtag__tagname = context['tags']
-            )
-
-        if 'min_view' in context\
-            or 'max_view' in context \
-            or self.ordering in ['max_view', '-max_view']:
-            movies_list = movies_list.annotate(
-                max_view = Max('chart__view')
-            )
-        if 'min_view' in context:
-            movies_list = movies_list.filter(max_view__gte = context['min_view'])
-        if 'max_view' in context:
-            movies_list = movies_list.filter(max_view__lte = context['max_view'])
-
-        return movies_list.order_by(context['sortby']).prefetch_related('statussongrelation_set')
+        return super()._get_queryset(objects, context)
 
 def detail(request, movie_id):
     movie = get_object_or_404(Status, id = movie_id)

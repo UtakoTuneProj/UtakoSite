@@ -1,12 +1,9 @@
 from django.urls import path, include
 from rest_framework import routers, serializers, viewsets
-from .views import StatusViewSet
+from .views import StatusList, StatusRetrieve
 from rest_framework import routers
 
-# Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register('statuses', StatusViewSet)
-
 urlpatterns = [
-    path('', include(router.urls))
+    path('movie/', StatusList.as_view()),
+    path('movie/<str:pk>/', StatusRetrieve.as_view(), name='detail'),
 ]

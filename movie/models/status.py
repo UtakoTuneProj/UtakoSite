@@ -16,7 +16,7 @@ class StatusManager(Manager):
     use_for_related_fields = True
 
     def analyzed(self, **kwargs):
-        return Status.objects.filter(song_index__isnull = False, **kwargs)
+        return Status.objects.filter(songindex__isnull = False, **kwargs)
 
 class Status(models.Model):
     id = models.CharField(db_column='ID', primary_key=True, max_length=12)  # Field name made lowercase.

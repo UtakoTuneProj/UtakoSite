@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404,redirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Min, Max, Count, F, Exists, OuterRef
 from django.views.generic.list import ListView
 from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, StatusSongRelation
@@ -134,7 +133,7 @@ class IndexView(ListView):
         if 'max_view' in context:
             movies_list = movies_list.filter(max_view__lte = context['max_view'])
 
-        return movies_list.order_by(context['sortby'])
+        return movies_list.order_by(context['sortby']).prefetch_related('statussongrelation_set')
 
 def detail(request, movie_id):
     movie = get_object_or_404(Status, id = movie_id)

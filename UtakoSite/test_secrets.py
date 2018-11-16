@@ -20,10 +20,12 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = ['localhost',]
+ALLOWED_HOSTS = ['localhost', 'testserver',]
 INTERNAL_IPS = ['localhost',]
 DEBUG = False
 
 GOOGLE_AD_CLIENT=""
 GOOGLE_ANALYTICS=""
 STATIC_URL = '/static/'
+
+LATEST_ANALYZER_MODEL_VERSION = 0

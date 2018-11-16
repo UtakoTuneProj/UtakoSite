@@ -18,6 +18,7 @@ if sys.argv[1:2] == ['test'] or 'pytest' in sys.argv[0]:
     from .test_secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
     from .test_secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS
     from .test_secrets import STATIC_URL
+    from .test_secrets import LATEST_ANALYZER_MODEL_VERSION
 else:
     from .secrets import SECRET_KEY, DATABASES
     from .secrets import ALLOWED_HOSTS, DEBUG
@@ -26,6 +27,7 @@ else:
     from .secrets import SOCIAL_AUTH_TWITTER_KEY, SOCIAL_AUTH_TWITTER_SECRET
     from .secrets import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
     from .secrets import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+    from .secrets import LATEST_ANALYZER_MODEL_VERSION
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

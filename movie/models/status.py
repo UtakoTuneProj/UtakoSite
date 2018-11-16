@@ -12,12 +12,6 @@ class Status(models.Model):
 
 from django.db.models import Exists, OuterRef, Manager
 
-class StatusManager(Manager):
-    use_for_related_fields = True
-
-    def analyzed(self, **kwargs):
-        return Status.objects.filter(songindex__isnull = False, **kwargs)
-
 class Status(models.Model):
     id = models.CharField(db_column='ID', primary_key=True, max_length=12)  # Field name made lowercase.
     validity = models.IntegerField()
@@ -29,8 +23,6 @@ class Status(models.Model):
     @property
     def isanalyzed(self):
         return self.statussongrelation_set.exists()
-
-    objects = StatusManager()
 
     class Meta:
         db_table = 'status'

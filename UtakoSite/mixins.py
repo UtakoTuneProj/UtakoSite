@@ -4,7 +4,7 @@ class StatusSearchMixIn():
     def _get_queryset(self, objects, context):
 
         if not context['not_analyzed']:
-            objects = objects.analyzed()
+            objects = objects.filter(songindex__isnull = False)
         if 'tags' in context:
             objects = objects.filter(
                 idtag__tagname = context['tags']
@@ -24,7 +24,7 @@ class StatusSearchMixIn():
         return objects.order_by(context['sortby']).prefetch_related('statussongrelation_set', 'songindex_set')
 
     def get_context_from_request(self, request):
-        get_request = request.GET.get
+        get_request = getattr(request, request.method).get
         context = {}
         ordering = '-postdate'
         if get_request('min_view') not in ['', None]:

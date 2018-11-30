@@ -33,9 +33,10 @@ class TestMovieViewIndex:
             tags=['にこにこ', '初音ミク'],
             index=(-1,1,0,0,0,0,0,0),
         ))
-        response = self.c.post(
-                'http://testserver/api/vocalosphere/range/',
-            {
+
+        response = self.c.get(
+            'http://testserver/api/vocalosphere/range/',
+            data={
                 'range_start': [0,0,0,0,0,0,0,0],
                 'range_end': [1,1,1,1,1,1,1,1]
             },

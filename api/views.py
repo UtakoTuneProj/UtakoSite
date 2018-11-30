@@ -25,7 +25,7 @@ class StatusRetrieve(generics.RetrieveAPIView):
 class MapRangeList(generics.GenericAPIView, mixins.ListModelMixin, MapRangeSearchMixIn):
     serializer_class = StatusSerializer
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):

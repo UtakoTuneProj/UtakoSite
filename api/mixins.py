@@ -1,6 +1,7 @@
 from django.conf import settings
 from .models import Status
 from UtakoSite.mixins import StatusSearchMixIn
+import json
 
 class BaseMapSearchMixIn(StatusSearchMixIn):
     def get_context_from_request(self, request):
@@ -23,18 +24,24 @@ class BaseMapSearchMixIn(StatusSearchMixIn):
 
 class MapRangeSearchMixIn(BaseMapSearchMixIn):
     def get_context_from_request(self, request):
-        request_query = getattr(request, request.method)
-        get_request = request_query.get
-        getlist = getattr(request, request.method).getlist
+        get_request = request.GET.get
         context = super().get_context_from_request(request)
 
-        if 'range_start' in request_query and 'range_end' in request_query:
-            context['range_start'] = getlist('range_start')
-            context['range_end'] = getlist('range_end')
+        def isvalid_range(txt):
+            pos = json.loads(txt)
+            if type(pos) not in (list, tuple):
+                return False
+            if len(pos) != 8:
+                return False
+            return True
+
+        if isvalid_range(get_request('range_start')) and isvalid_range(get_request('range_end')):
+            context['range_start'] = json.loads(get_request('range_start'))
+            context['range_end'] = json.loads(get_request('range_end'))
         else:
             context['range_start'] = [-1,-1,-1,-1,-1,-1,-1,-1]
             context['range_end'] = [1,1,1,1,1,1,1,1]
-        
+
         return context
 
     def _get_queryset(self, objects, context):

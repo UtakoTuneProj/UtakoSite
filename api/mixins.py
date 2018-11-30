@@ -20,7 +20,7 @@ class BaseMapSearchMixIn(StatusSearchMixIn):
         objects = objects.filter(
             songindex__version=context["version"]
         )
-        return super()._get_queryset(objects, context)
+        return super()._get_queryset(objects, context).prefetch_related('chart_set')
 
 class MapRangeSearchMixIn(BaseMapSearchMixIn):
     def get_context_from_request(self, request):
@@ -28,6 +28,8 @@ class MapRangeSearchMixIn(BaseMapSearchMixIn):
         context = super().get_context_from_request(request)
 
         def isvalid_range(txt):
+            if txt is None:
+                return False
             pos = json.loads(txt)
             if type(pos) not in (list, tuple):
                 return False

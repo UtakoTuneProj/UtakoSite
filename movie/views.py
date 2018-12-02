@@ -51,7 +51,7 @@ def parse_nicoapi(movie_id):
 
 class MovieIndexMixIn(StatusSearchMixIn):
     def _get_queryset(self, objects, context):
-        return super()._get_queryset(objects, context).prefetch('statussongrelation_set')
+        return super()._get_queryset(objects, context).prefetch_related('statussongrelation_set')
 
 # Create your views here.
 class IndexView(ListView, MovieIndexMixIn):

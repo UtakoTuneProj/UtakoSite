@@ -21,7 +21,7 @@ class StatusSearchMixIn():
         if 'max_view' in context:
             objects = objects.filter(max_view__lte = context['max_view'])
 
-        return objects.order_by(context['sortby']).prefetch_related('statussongrelation_set', 'songindex_set')
+        return objects.order_by(context['sortby'])
 
     def get_context_from_request(self, request):
         get_request = getattr(request, request.method).get

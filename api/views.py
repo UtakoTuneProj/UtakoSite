@@ -16,7 +16,7 @@ class StatusList(generics.ListAPIView, StatusSearchMixIn):
     def get_queryset(self):
         objects = Status.objects
         context = super().get_context_from_request(self.request)
-        return self._get_queryset(objects, context).prefetch_related('chart_set')
+        return self._get_queryset(objects, context).prefetch_related('chart_set', 'songindex_set')
 
 class StatusRetrieve(generics.RetrieveAPIView):
     queryset = Status.objects
@@ -36,7 +36,7 @@ class MapRangeList(generics.GenericAPIView, mixins.ListModelMixin, MapRangeSearc
 class MapPointList(generics.GenericAPIView, mixins.ListModelMixin, MapPointSearchMixIn):
     serializer_class = StatusSerializer
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):

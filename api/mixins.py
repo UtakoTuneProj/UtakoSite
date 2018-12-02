@@ -3,6 +3,7 @@ from django.db.models import F
 from .models import Status
 from UtakoSite.mixins import StatusSearchMixIn
 import json
+from rest_framework.exceptions import ValidationError
 
 def isvalid_range(txt):
     if txt is None:
@@ -42,8 +43,7 @@ class MapRangeSearchMixIn(BaseMapSearchMixIn):
             context['range_start'] = json.loads(get_request('range_start'))
             context['range_end'] = json.loads(get_request('range_end'))
         else:
-            context['range_start'] = [-1,-1,-1,-1,-1,-1,-1,-1]
-            context['range_end'] = [1,1,1,1,1,1,1,1]
+            raise ValidationError(detail='parameter "range_start" or "range_end" is not valid')
 
         return context
 
@@ -61,11 +61,12 @@ class MapPointSearchMixIn(BaseMapSearchMixIn):
     def get_context_from_request(self, request):
         get_request = request.GET.get
         context = super().get_context_from_request(request)
+        print(get_request('origin'))
 
         if isvalid_range(get_request('origin')):
             context['origin'] = json.loads(get_request('origin'))
         else:
-            context['origin'] = [0,0,0,0,0,0,0,0]
+            raise ValidationError(detail='parameter "origin" is not valid')
 
         return context
 

@@ -11,7 +11,7 @@ from .status import Status
 
 class SongIndex(models.Model):
     id = models.AutoField(primary_key=True)
-    status = models.ForeignKey(Status, on_delete = models.CASCADE, max_length=12, default="UNKNOWN")  # Field name made lowercase.
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, max_length=12, default="UNKNOWN")  # Field name made lowercase.
     value0 = models.FloatField()
     value1 = models.FloatField()
     value2 = models.FloatField()
@@ -25,3 +25,13 @@ class SongIndex(models.Model):
     class Meta:
         db_table = 'song_index'
         unique_together = (('status', 'version'),)
+        indexes = [
+            models.Index(fields=['value0',]),
+            models.Index(fields=['value1',]),
+            models.Index(fields=['value2',]),
+            models.Index(fields=['value3',]),
+            models.Index(fields=['value4',]),
+            models.Index(fields=['value5',]),
+            models.Index(fields=['value6',]),
+            models.Index(fields=['value7',]),
+        ]

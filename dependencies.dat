@@ -5,4 +5,7 @@ django-debug-toolbar
 pytest-django
 social-auth-app-django
 django-registration
+djangorestframework
+django-filter
+markdown
 factory_boy

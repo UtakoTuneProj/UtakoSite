@@ -31,7 +31,7 @@
           </tr><tr>
             <th><i class="icon-energy"></i></th>
             <td>
-              {% if card.movie.isanalyzed %}
+              {% if card.movie.songindex_set.count > 0 %}
               <span class="text-success">解析済</span>
               {% else %}
               <span class="text-secondary">未解析</span>

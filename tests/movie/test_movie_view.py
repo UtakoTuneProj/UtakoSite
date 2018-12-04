@@ -1,12 +1,8 @@
-from datetime import timedelta, datetime
-import random
 import pytest
-import math
-from django.test import Client, TestCase
+from django.test import Client
 import urllib
 from urllib.request import Request
 
-from movie.models import Status, Chart, Idtag, SongIndex, SongRelation, StatusSongRelation
 from tests.factory import StatusFactory
 
 class MonkeyRequest(Request):

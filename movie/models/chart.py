@@ -19,3 +19,7 @@ class Chart(models.Model):
     class Meta:
         db_table = 'chart'
         unique_together = (('status', 'epoch'),)
+        indexes = [
+            models.Index(fields=['view',]),
+            models.Index(fields=['status','view']),
+        ]

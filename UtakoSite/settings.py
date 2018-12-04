@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import sys
 
-if sys.argv[1:2] == ['test'] or 'pytest' in sys.argv[0]:
+if sys.argv[1:2] == ['test']\
+    or 'pytest' in sys.argv[0]\
+    or os.environ.get('DJANGO_ENV') == 'test':
     from .test_secrets import SECRET_KEY, DATABASES
     from .test_secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
     from .test_secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS

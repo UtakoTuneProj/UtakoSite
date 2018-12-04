@@ -1,6 +1,5 @@
 import pytest
 from django.test import Client
-import urllib
 from urllib.request import Request
 
 from tests.factory import StatusFactory
@@ -11,7 +10,7 @@ class MonkeyRequest(Request):
 
 def patch_getthumbinfo(func):
     def wrapper(self, monkeypatch, *args, **kwargs):
-        monkeypatch.setattr(urllib.request, 'Request', MonkeyRequest)
+        monkeypatch.setattr('movie.views.Request', MonkeyRequest)
         func(self, *args, **kwargs)
     return wrapper
 
@@ -94,6 +93,7 @@ class TestMovieViewIndex(TestMovieViewAbstract):
     def test_min_view(self):
         statuses = StatusFactory.create_batch(8)
         statuses += [ StatusFactory(charts__max_view=10) ]
+        statuses += [ StatusFactory(charts__max_view=100) ]
         statuses += [ StatusFactory(charts__max_view=200) ]
         count = sum(1 for s in statuses if s.chart_set.last().view >= 100 )
         response = self.c.get('/movie/', {'min_view': 100})
@@ -106,6 +106,7 @@ class TestMovieViewIndex(TestMovieViewAbstract):
     def test_max_view(self):
         statuses = StatusFactory.create_batch(8)
         statuses += [ StatusFactory(charts__max_view=10) ]
+        statuses += [ StatusFactory(charts__max_view=100) ]
         statuses += [ StatusFactory(charts__max_view=200) ]
         count = sum(1 for s in statuses if s.chart_set.last().view <= 100 )
         response = self.c.get('/movie/', {'max_view': 100})

@@ -29,7 +29,8 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('', include('social_django.urls', namespace='social')),
-    re_path('^$', views.flatpage, {'url': 'index/'})
+    path('player/', views.flatpage, {'url': 'player/'}),
+    re_path('^$', views.flatpage, {'url': 'index/'}),
 ]
 
 if settings.DEBUG:

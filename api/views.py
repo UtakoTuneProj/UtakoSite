@@ -22,7 +22,7 @@ class StatusRetrieve(generics.RetrieveAPIView):
     queryset = Status.objects
     serializer_class = StatusSerializer
 
-class BaseUtakoList(generics.GenericAPIView)
+class BaseUtakoList(generics.GenericAPIView):
     serializer_class = StatusSerializer
 
     def get(self, request, *args, **kwargs):

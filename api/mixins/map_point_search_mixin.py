@@ -10,7 +10,6 @@ class MapPointSearchMixIn(BaseMapSearchMixIn):
     def get_context_from_request(self, request):
         get_request = request.GET.get
         context = super().get_context_from_request(request)
-        print(get_request('origin'))
 
         if isvalid_range(get_request('origin')):
             context['origin'] = json.loads(get_request('origin'))

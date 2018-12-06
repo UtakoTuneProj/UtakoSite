@@ -22,6 +22,10 @@ class SongIndex(models.Model):
     value7 = models.FloatField()
     version = models.IntegerField()
 
+    @property
+    def values(self):
+        return [ getattr(self, "value{}".format(i)) for i in range(8)]
+
     class Meta:
         db_table = 'song_index'
         unique_together = (('status', 'version'),)

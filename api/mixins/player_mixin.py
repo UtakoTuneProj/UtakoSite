@@ -50,6 +50,8 @@ class PlayerMixIn(BaseMapSearchMixIn):
         else:
             next_id = self.search_next_song(context)
 
+        self.session['played'] = context['played'] + [next_id]
+
         return Status.objects.filter(pk=next_id)
 
     def search_next_song(self, context, page=1):
@@ -71,8 +73,6 @@ class PlayerMixIn(BaseMapSearchMixIn):
         else:
             next_id = self.search_next_song(context, page + 1)
 
-        self.session['played'] = context['played'] + [next_id]
-
         return next_id
 
     def get_nextpos(self, context):
@@ -91,7 +91,6 @@ class PlayerMixIn(BaseMapSearchMixIn):
         else np.random.randn(8)
 
         vec = vec / linalg.norm(vec)
-        print(previous_position, vec)
         return previous_position + POSITION_STEP * np.random.normal(1, 0.25) * vec
 
     def is_playable(self, mvid, context):

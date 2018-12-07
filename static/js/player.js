@@ -19,12 +19,13 @@ function moveMovie(e) {
         e.origin == origin
         && e.data.eventName == 'statusChange'
         && e.data.data.playerStatus == 4
-    ){
+    ){ //再生終了イベント
+        app.playing = false
         getNextMovie();
     } else if (
         e.origin == origin
         && e.data.eventName == 'loadComplete'
-    ){
+    ){ //読み込み完了
         if(!initial){
         player.contentWindow.postMessage({
             sourceConnectorType: 1,
@@ -32,7 +33,20 @@ function moveMovie(e) {
             }, origin
         )}
         initial = false;
-}}
+    } else if (
+        e.origin == origin
+        && e.data.eventName == 'statusChange'
+        && e.data.data.playerStatus == 3
+    ){ //一時停止
+        app.playing = false
+    } else if (
+        e.origin == origin
+        && e.data.eventName == 'statusChange'
+        && e.data.data.playerStatus == 2
+    ){ //再生
+        app.playing = true
+    }
+}
 
 window.addEventListener('message', moveMovie )
 
@@ -60,6 +74,7 @@ const app = new Vue({
     el: '#vuePlayer',
     data:{
         mvid: null,
+        playing: false,
     },
     created: function(){
         getNextMovie();
@@ -76,6 +91,15 @@ const app = new Vue({
             player.contentWindow.postMessage({
                 sourceConnectorType: 1,
                 eventName: 'play',
+                }, origin
+            );
+        },
+        pause: function() {
+            const player = document.getElementById('player');
+            const origin = 'https://embed.nicovideo.jp';
+            player.contentWindow.postMessage({
+                sourceConnectorType: 1,
+                eventName: 'pause',
                 }, origin
             );
         },

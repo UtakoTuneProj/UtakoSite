@@ -18,15 +18,16 @@ PLAYER
     </div>
   </div>
   <div class="row my-4">
-    <div class="col-lg-10 offset-lg-1">
-      <div id="controller" class="mx-auto" style="width:200px">
-        <button v-on:click="play" class="col-5 offset-1 btn btn-dark">
-          <i class="icon-control-play" style="font-size:40px"></i>
-        </button>
-        <button v-on:click="next" class="col-5 btn btn-dark">
-          <i class="icon-control-forward" style="font-size:40px"></i>
-        </button>
-      </div>
+    <div id="controller" class="mx-auto" style="width:200px">
+      <button v-if="playing" v-on:click="pause" class="col-5 offset-1 btn btn-dark">
+        <i class="icon-control-pause" style="font-size:40px"></i>
+      </button>
+      <button v-else v-on:click="play" class="col-6 offset-1 btn btn-dark">
+        <i class="icon-control-play" style="font-size:40px"></i>
+      </button>
+      <button v-on:click="next" class="col-6 btn btn-dark">
+        <i class="icon-control-forward" style="font-size:40px"></i>
+      </button>
     </div>
   </div>
 </div>

@@ -9,3 +9,4 @@ djangorestframework
 django-filter
 markdown
 factory_boy
+numpy

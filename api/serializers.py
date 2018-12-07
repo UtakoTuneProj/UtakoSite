@@ -6,7 +6,7 @@ from rest_framework import serializers
 class SongIndexSerializer(serializers.ModelSerializer):
     class Meta:
         model = SongIndex
-        exclude = ('id', 'status')
+        fields = ['values',] + ['value{}'.format(i) for i in range(8)]
 
 class ChartSerializer(serializers.ModelSerializer):
     class Meta:

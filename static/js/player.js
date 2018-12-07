@@ -5,7 +5,7 @@ var positions = []
 function getNextMovie(){
     axios
     .get(
-        '/api/vocalosphere/point/?origin=[' + getNextPosition().join(',') + ']')
+        '/api/player/')
     .then( response => ( response.data.results[0].id ) )
     .then( mvid => ( app.mvid = mvid ) )
     .catch( error => ( console.log(error) ) )
@@ -23,24 +23,15 @@ function moveMovie(e) {
     } else if (
         e.origin == origin
         && e.data.eventName == 'loadComplete'
-        && !initial
     ){
+        if(!initial){
         player.contentWindow.postMessage({
             sourceConnectorType: 1,
             eventName: 'play',
             }, origin
-        );
-        initial = false
-    }
-}
-
-const getNextPosition = function(){
-    position = []
-    for (i=0;i<8;i++) {
-        position.push(Math.round(( Math.random() * 2 - 1  ) * 100) / 100);
-    }
-    return position;
-}
+        )}
+        initial = false;
+}}
 
 window.addEventListener('message', moveMovie )
 

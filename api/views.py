@@ -3,7 +3,7 @@ from .models import Status
 from .serializers import StatusSerializer
 from rest_framework import generics, mixins
 from UtakoSite.mixins import StatusSearchMixIn
-from .mixins import MapRangeSearchMixIn, MapPointSearchMixIn
+from .mixins import MapRangeSearchMixIn, MapPointSearchMixIn, PlayerMixIn
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -39,3 +39,5 @@ class MapRangeList(BaseUtakoList, mixins.ListModelMixin, MapRangeSearchMixIn):
 class MapPointList(BaseUtakoList, mixins.ListModelMixin, MapPointSearchMixIn):
     pass
 
+class PlayerList(BaseUtakoList, mixins.ListModelMixin, PlayerMixIn):
+    pass

@@ -6,7 +6,7 @@
 
 {% block content %}
   <div class="row">
-    <div class="col-lg-8 offset-lg-2">
+    <div class="col-lg-10 offset-lg-1">
       <div class="embed_movie">
         <script type="application/javascript" src="https://embed.nicovideo.jp/watch/{{ movie.id }}/script?w=1024&h=576"></script>
         <noscript>
@@ -15,6 +15,9 @@
         </noscript>
       </div>
     </div>
+  </div>
+  <div class="row my-2">
+    <a class="col-lg-4 offset-lg-4 btn btn-primary" href="/player?origin_id={{movie.id}}">この動画を起点にして連続再生</a>
   </div>
 
   <!-- Ads -->

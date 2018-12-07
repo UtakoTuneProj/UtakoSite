@@ -53,8 +53,8 @@ Vue.component('niconico-player', {
     template: '<iframe class="embed-responsive-item" frameborder="no" scrolling="no" allow="fullscreen" id="player"></iframe>'
 })
 
-const r = new RegExp("[?&]origin_id=(([^&#]*)|&|#|$)").exec( location.search )[2]
-const initial_mvid = r ? r : null
+const r = new RegExp("[?&]origin_id=(([^&#]*)|&|#|$)").exec( location.search )
+const initial_mvid = r ? (r[2] ? r[2] : null) : null
 
 const app = new Vue({
     el: '#vuePlayer',

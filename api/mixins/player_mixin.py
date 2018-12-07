@@ -25,7 +25,7 @@ TAG_BLACKLIST = {
     '日刊トップテン！VOCALOID＆something',
     'VOCALOIDメドレー',
 }
-POSITION_STEP = 0.05
+POSITION_STEP = 0.03
 VERSION = settings.LATEST_ANALYZER_MODEL_VERSION
 
 class PlayerMixIn(BaseMapSearchMixIn):
@@ -88,10 +88,11 @@ class PlayerMixIn(BaseMapSearchMixIn):
             version=VERSION
         ).values )\
         if len( context['played'] ) > 1\
-        else np.array([random.random() * 2 - 1 for i in range(8)])
+        else np.random.randn(8)
 
         vec = vec / linalg.norm(vec)
-        return previous_position + POSITION_STEP * vec
+        print(previous_position, vec)
+        return previous_position + POSITION_STEP * np.random.normal(1, 0.25) * vec
 
     def is_playable(self, mvid, context):
         tree = {}

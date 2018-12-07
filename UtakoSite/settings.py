@@ -181,6 +181,9 @@ if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     INTERNAL_IPS = ['127.0.0.1']
 
+if not DEBUG:
+    SOCIAL_AUTH_REDIRECT_IS_HTTP = True
+
 LOGIN_URL = 'register:login'
 LOGIN_REDIRECT_URL = 'movie:index'
 SOCIAL_AUTH_LOGIN_ERROR_URL = 'register:login'

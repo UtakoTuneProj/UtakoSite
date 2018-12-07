@@ -18,19 +18,43 @@ PLAYER
     </div>
   </div>
   <div class="row my-4">
-    <div id="controller" class="mx-auto" style="width:200px">
-      <button v-if="playing" v-on:click="pause" class="col-5 offset-1 btn btn-dark">
+    <div id="controller" class="mx-auto" style="width:250px">
+      <a v-bind:href="tweetUri" target="_blank" class="col-3 offset-1 btn btn-primary">
+        <i class="icon-social-twitter" style="font-size:40px"></i>
+      </a>
+      <button v-if="playing" v-on:click="pause" class="col-4 btn btn-dark">
         <i class="icon-control-pause" style="font-size:40px"></i>
       </button>
-      <button v-else v-on:click="play" class="col-6 offset-1 btn btn-dark">
+      <button v-else v-on:click="play" class="col-4 btn btn-dark">
         <i class="icon-control-play" style="font-size:40px"></i>
       </button>
-      <button v-on:click="next" class="col-6 btn btn-dark">
+
+      <button v-on:click="next" class="col-3 btn btn-dark">
         <i class="icon-control-forward" style="font-size:40px"></i>
       </button>
     </div>
   </div>
 </div>
+
+<!-- Ads -->
+<div class="row my-4">
+  <div class="col">
+    {% include "ads.html" %}
+  </div>
+</div>
+
+<div class="row my-4">
+  <div class="col">
+    {% include "ads.html" %}
+  </div>
+</div>
+
+<div class="row my-4">
+  <div class="col">
+    {% include "ads.html" %}
+  </div>
+</div>
+
 {% endblock content %}
 
 {% block extra_js %}

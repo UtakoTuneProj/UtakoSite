@@ -82,6 +82,17 @@ const app = new Vue({
     computed:{
         playerComponent: function(){ return this.mvid ? 'niconico-player' : 'player-loading' },
         url: function(){ return 'https://embed.nicovideo.jp/watch/' + this.mvid + '?jsapi=1' },
+        tweetUri: function(){
+            return "https://twitter.com/intent/tweet?text="
+            + encodeURI(
+                'https://utako-tune.jp/ でこの曲を聞いています:\nhttp://nico.ms/'
+                + this.mvid
+                + '\nUTAKO TUNEでこの曲に似た曲を見る: https://utako-tune.jp/movie/'
+                + this.mvid
+                + '\nUTAKO TUNEでこの曲から連続再生: https://utako-tune.jp/player?origin_id='
+                + this.mvid
+            )
+        }
     },
     methods:{
         next: () => (getNextMovie()),

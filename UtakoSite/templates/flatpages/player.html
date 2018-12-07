@@ -5,16 +5,31 @@
 {% endblock title %}
 
 {% block extra_css %}
+  <link rel="stylesheet" type="text/css" href="{%static 'css/player.css'%}">
 {% endblock %}
 
 {% block content %}
+<div id="vuePlayer">
   <div class="row">
     <div class="col-lg-10 offset-lg-1">
-      <div class="embed_movie" id="vuePlayer">
-        <iframe v-bind:src='url' frameborder="no" scrolling="no" allow="fullscreen" id="player"></iframe>
+      <div v-bind:class="mvid ? 'embed-responsive embed-responsive-16by9' : 'loading'">
+        <component v-bind:is="playerComponent" v-bind:src="url"></component>
       </div>
     </div>
   </div>
+  <div class="row my-4">
+    <div class="col-lg-10 offset-lg-1">
+      <div id="controller" class="mx-auto" style="width:200px">
+        <button v-on:click="play" class="col-5 offset-1 btn btn-dark">
+          <i class="icon-control-play" style="font-size:40px"></i>
+        </button>
+        <button v-on:click="next" class="col-5 btn btn-dark">
+          <i class="icon-control-forward" style="font-size:40px"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 
 {% block extra_js %}

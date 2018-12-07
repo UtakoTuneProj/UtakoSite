@@ -1,6 +1,15 @@
-var waitLoad = false
+var initial = true
 var played = []
 var positions = []
+
+function getNextMovie(){
+    axios
+    .get(
+        '/api/vocalosphere/point/?origin=[' + getNextPosition().join(',') + ']')
+    .then( response => ( response.data.results[0].id ) )
+    .then( mvid => ( app.mvid = mvid ) )
+    .catch( error => ( console.log(error) ) )
+}
 
 function moveMovie(e) {
     const player = document.getElementById('player');
@@ -10,29 +19,19 @@ function moveMovie(e) {
         && e.data.eventName == 'statusChange'
         && e.data.data.playerStatus == 4
     ){
-        app.mvid = generateMovie();
-        waitLoad = true
+        getNextMovie();
     } else if (
         e.origin == origin
         && e.data.eventName == 'loadComplete'
-        && waitLoad == true
+        && !initial
     ){
         player.contentWindow.postMessage({
             sourceConnectorType: 1,
             eventName: 'play',
-        }, origin)
-        waitLoad == false
+            }, origin
+        );
+        initial = false
     }
-}
-
-function generateMovie() {
-    var next_id = 'sm9'
-    axios
-        .get(
-            '/api/vocalosphere/point/?origin=[' + getNextPosition().join(',') + ']')
-        .then( response => ( next_id = response.data.results[0].id ) )
-        .catch( error => ( console.log(error) ) )
-    return next_id
 }
 
 const getNextPosition = function(){
@@ -45,14 +44,45 @@ const getNextPosition = function(){
 
 window.addEventListener('message', moveMovie )
 
+Vue.component('player-loading', {
+    template: '<div id="floatingCirclesG">\n'
+            + '<div class="f_circleG" id="frotateG_01"></div>\n'
+            + '<div class="f_circleG" id="frotateG_02"></div>\n'
+            + '<div class="f_circleG" id="frotateG_03"></div>\n'
+            + '<div class="f_circleG" id="frotateG_04"></div>\n'
+            + '<div class="f_circleG" id="frotateG_05"></div>\n'
+            + '<div class="f_circleG" id="frotateG_06"></div>\n'
+            + '<div class="f_circleG" id="frotateG_07"></div>\n'
+            + '<div class="f_circleG" id="frotateG_08"></div>\n'
+            + '</div>'
+})
+
+Vue.component('niconico-player', {
+    template: '<iframe class="embed-responsive-item" frameborder="no" scrolling="no" allow="fullscreen" id="player"></iframe>'
+})
+
 const app = new Vue({
     el: '#vuePlayer',
     data:{
-        mvid: generateMovie(),
+        mvid: null,
     },
-    computed: {
-        url: function() {
-            return "https://embed.nicovideo.jp/watch/" + this.mvid + "?jsapi=1";
-        }
+    created: function(){
+        getNextMovie()
+    },
+    computed:{
+        playerComponent: function(){ return this.mvid ? 'niconico-player' : 'player-loading' },
+        url: function(){ return 'https://embed.nicovideo.jp/watch/' + this.mvid + '?jsapi=1' },
+    },
+    methods:{
+        next: () => (getNextMovie()),
+        play: function() {
+            const player = document.getElementById('player');
+            const origin = 'https://embed.nicovideo.jp';
+            player.contentWindow.postMessage({
+                sourceConnectorType: 1,
+                eventName: 'play',
+                }, origin
+            );
+        },
     },
 });

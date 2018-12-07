@@ -22,7 +22,7 @@ class StatusRetrieve(generics.RetrieveAPIView):
     queryset = Status.objects
     serializer_class = StatusSerializer
 
-class MapRangeList(generics.GenericAPIView, mixins.ListModelMixin, MapRangeSearchMixIn):
+class BaseUtakoList(generics.GenericAPIView):
     serializer_class = StatusSerializer
 
     def get(self, request, *args, **kwargs):
@@ -33,13 +33,9 @@ class MapRangeList(generics.GenericAPIView, mixins.ListModelMixin, MapRangeSearc
         context = self.get_context_from_request(self.request)
         return self._get_queryset(objects, context)
 
-class MapPointList(generics.GenericAPIView, mixins.ListModelMixin, MapPointSearchMixIn):
-    serializer_class = StatusSerializer
+class MapRangeList(BaseUtakoList, mixins.ListModelMixin, MapRangeSearchMixIn):
+    pass
 
-    def get(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+class MapPointList(BaseUtakoList, mixins.ListModelMixin, MapPointSearchMixIn):
+    pass
 
-    def get_queryset(self):
-        objects = Status.objects
-        context = self.get_context_from_request(self.request)
-        return self._get_queryset(objects, context)

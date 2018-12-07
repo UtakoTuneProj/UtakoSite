@@ -3,7 +3,7 @@ import pytest
 import json
 from django.test import Client
 
-from tests.helpers import StatusCreationHelper as sch
+from tests.factory import StatusFactory
 
 @pytest.mark.django_db
 class TestMovieViewIndex:
@@ -11,327 +11,101 @@ class TestMovieViewIndex:
     now = datetime.now()
 
     def test_default(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-        ))
+        statuses = StatusFactory.create_batch(4)
+        statuses += [ StatusFactory(indexes__analyze=False) ]
         response = self.c.get('/api/movie/')
         result = json.loads(response.content.decode())
         # status must be OK
         assert response.status_code == 200
         # not return non-indexed movie
-        assert result['count'] == 2
+        assert result['count'] == 4
 
     def test_sortby_postdate(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,1,0,0,0,0,0),
-        ),dict(
-            mvid='sm4',
-            postdate=self.now - timedelta(days=5),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,1,0,0,0,0),
-        ))
+        statuses = StatusFactory.create_batch(5)
+        statuses.sort(key=lambda s: s.postdate)
         response = self.c.get('/api/movie/', {'sortby': 'postdate'})
         result = json.loads(response.content.decode())
         # status must be ok
         assert response.status_code == 200
         # ordered by postdate asc
-        assert list(map(lambda x: x['id'], result['results'] )) == ['sm1', 'sm2', 'sm3', 'sm4']
+        assert list(map(lambda x: x['id'], result['results'] )) == [x.id for x in statuses]
 
     def test_sortby_postdate_desc(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,1,0,0,0,0,0),
-        ),dict(
-            mvid='sm4',
-            postdate=self.now - timedelta(days=5),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,1,0,0,0,0),
-        ))
+        statuses = StatusFactory.create_batch(5)
+        statuses.sort(key=lambda s: s.postdate, reverse=True)
         response = self.c.get('/api/movie/', {'sortby': '-postdate'})
         result = json.loads(response.content.decode())
         # status must be OK
         assert response.status_code == 200
         # ordered by postdate desc
-        assert list(map(lambda x: x['id'], result['results'] )) == ['sm4', 'sm3', 'sm2', 'sm1']
+        assert list(map(lambda x: x['id'], result['results'] )) == [x.id for x in statuses]
 
     def test_sortby_maxview_asc(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=900,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=9000,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=9,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,1,0,0,0,0,0),
-        ),dict(
-            mvid='sm4',
-            postdate=self.now - timedelta(days=5),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,1,0,0,0,0),
-        ))
+        statuses = StatusFactory.create_batch(5)
+        statuses.sort(key=lambda s: s.chart_set.last().view)
         response = self.c.get('/api/movie/', {'sortby': 'max_view'})
         result = json.loads(response.content.decode())
         # status must be OK
         assert response.status_code == 200
         # ordered by max_view asc
-        assert list(map(lambda x: x['id'], result['results']  )) == ['sm3', 'sm4', 'sm1', 'sm2']
+        assert list(map(lambda x: x['id'], result['results'] )) == [x.id for x in statuses]
 
     def test_sortby_maxview_desc(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=900,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=9000,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=9,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,1,0,0,0,0,0),
-        ),dict(
-            mvid='sm4',
-            postdate=self.now - timedelta(days=5),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,1,0,0,0,0),
-        ))
+        statuses = StatusFactory.create_batch(5)
+        statuses.sort(key=lambda s: s.chart_set.last().view, reverse=True)
         response = self.c.get('/api/movie/', {'sortby': '-max_view'})
         result = json.loads(response.content.decode())
         # status must be OK
         assert response.status_code == 200
         # ordered by max_view desc
-        assert list(map(lambda x: x['id'], result['results'] )) == ['sm2', 'sm1', 'sm4', 'sm3']
+        assert list(map(lambda x: x['id'], result['results'] )) == [x.id for x in statuses]
 
     def test_not_analyzed(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=900,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=9000,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=9,
-            tags=['にこにこ', '初音ミク'],
-        ),dict(
-            mvid='sm4',
-            postdate=self.now - timedelta(days=5),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-        ))
+        statuses = StatusFactory.create_batch(4)
+        statuses += [ StatusFactory(indexes__analyze=False) ]
         response = self.c.get('/api/movie/', {'not_analyzed': 'on'})
         result = json.loads(response.content.decode())
         # status must be OK
         assert response.status_code == 200
         # returns all tracked movie even if not analyzed
-        assert result['count'] == 4
+        assert result['count'] == 5
 
     def test_min_view(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=900,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=9000,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=9,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,1,0,0,0,0,0),
-        ),dict(
-            mvid='sm4',
-            postdate=self.now - timedelta(days=5),
-            validity=True,
-            max_view=100,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,1,0,0,0,0,0),
-        ))
+        statuses = StatusFactory.create_batch(8)
+        statuses += [ StatusFactory(charts__max_view=10) ]
+        statuses += [ StatusFactory(charts__max_view=100) ]
+        statuses += [ StatusFactory(charts__max_view=200) ]
+        count = sum(1 for s in statuses if s.chart_set.last().view >= 100 )
         response = self.c.get('/api/movie/', {'min_view': 100})
         result = json.loads(response.content.decode())
         # status must be OK
         assert response.status_code == 200
         # returns max_view >= 100
-        assert result['count'] == 3
+        assert result['count'] == count
 
     def test_max_view(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=100,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=9000,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=9,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,1,0,0,0,0,0),
-        ),dict(
-            mvid='sm4',
-            postdate=self.now - timedelta(days=5),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,1,0,0,0,0,0),
-        ))
+        statuses = StatusFactory.create_batch(8)
+        statuses += [ StatusFactory(charts__max_view=10) ]
+        statuses += [ StatusFactory(charts__max_view=100) ]
+        statuses += [ StatusFactory(charts__max_view=200) ]
+        count = sum(1 for s in statuses if s.chart_set.last().view <= 100 )
         response = self.c.get('/api/movie/', {'max_view': 100})
         result = json.loads(response.content.decode())
         # status must be OK
         assert response.status_code == 200
         # returns max_view <= 100
-        assert result['count'] == 3
+        assert result['count'] == count
 
     def test_tags(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=100,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=9000,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=9,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,1,0,0,0,0,0),
-        ),dict(
-            mvid='sm4',
-            postdate=self.now - timedelta(days=5),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', 'GUMI'],
-            index=(1,0,1,0,0,0,0,0),
-        ))
-        response = self.c.get('/api/movie/', {'tags': '初音ミク'})
+        statuses = StatusFactory.create_batch(5)
+        target_tag = statuses[0].idtag_set.first().tagname
+        count = sum(1 for s in statuses if s.idtag_set.filter(tagname=target_tag).exists() )
+        response = self.c.get('/api/movie/', {'tags': target_tag})
         result = json.loads(response.content.decode())
         # status must be OK
         assert response.status_code == 200
         # returns max_view <= 100
-        assert result['count'] == 3
+        assert result['count'] == count
 
 @pytest.mark.django_db
 class TestMovieViewDetail:
@@ -339,20 +113,13 @@ class TestMovieViewDetail:
     now = datetime.now()
 
     def test_movie_id(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ))
-        response = self.c.get('/api/movie/sm1/')
+        status = StatusFactory()
+        response = self.c.get('/api/movie/{}/'.format(status.id))
         result = json.loads(response.content.decode())
         # status must be OK
         assert response.status_code == 200
         # not return non-indexed movie
-        assert result['id'] == 'sm1'
+        assert result['id'] == status.id
 
     def test_404(self):
         response = self.c.get('/api/movie/sm1/')

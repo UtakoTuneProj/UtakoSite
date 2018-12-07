@@ -4,6 +4,7 @@ import json
 from django.test import Client
 
 from tests.helpers import StatusCreationHelper as sch
+from tests.factory import StatusFactory
 
 @pytest.mark.django_db
 class TestRangeSearchIndex:
@@ -11,40 +12,23 @@ class TestRangeSearchIndex:
     now = datetime.now()
 
     def test_default(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(-1,1,0,0,0,0,0,0),
-        ))
-
+        statuses = StatusFactory.create_batch(10)
+        count = 0
+        count = sum(
+            1 for s in statuses\
+            if s.songindex_set.last().value0 >= 0
+        )
         response = self.c.get(
             'http://testserver/api/vocalosphere/range/',
             data={
-                'range_start': '[0,0,0,0,0,0,0,0]',
+                'range_start': '[0,-1,-1,-1,-1,-1,-1,-1]',
                 'range_end': '[1,1,1,1,1,1,1,1]'
             },
         )
         result = json.loads(response.content.decode())
         # no data range query must be error
         assert response.status_code == 200
-        assert result['count'] == 2
+        assert result['count'] == count
 
 @pytest.mark.django_db
 class TestPointSearchIndex:
@@ -52,39 +36,23 @@ class TestPointSearchIndex:
     now = datetime.now()
 
     def test_default(self):
-        sch().create_testcases(dict(
-            mvid='sm1',
-            postdate=self.now - timedelta(days=8),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,0,0,0,0,0,0,0),
-        ),dict(
-            mvid='sm2',
-            postdate=self.now - timedelta(days=7),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,1,0,0,0,0,0),
-        ),dict(
-            mvid='sm3',
-            postdate=self.now - timedelta(days=6),
-            validity=True,
-            max_view=90,
-            tags=['にこにこ', '初音ミク'],
-            index=(1,1,0,0,0,0,0,0),
-        ))
-
+        statuses = StatusFactory.create_batch(10)
+        origin = statuses[0].songindex_set.last().values
+        statuses.sort(
+            key = lambda s:\
+            sum(
+                map(
+                    lambda x: (x[0]-x[1])**2, zip(
+                    origin,
+                    s.songindex_set.last().values
+        ))))
         response = self.c.get(
             'http://testserver/api/vocalosphere/point/',
             data={
-                'origin': '[1,1,1,1,1,1,1,1]',
+                'origin': '[{}]'.format(','.join(map(lambda x:'{}'.format(x), origin))),
             },
         )
         result = json.loads(response.content.decode())
         # no data range query must be error
         assert response.status_code == 200
-        assert result['count'] == 3
-        assert result['results'][0]['id'] == 'sm2'
-        assert result['results'][1]['id'] == 'sm3'
-        assert result['results'][2]['id'] == 'sm1'
+        assert [ x['id'] for x in result['results'] ] == [ s.id for s in statuses ]

@@ -1,23 +1,23 @@
 import factory
-import faker
 from movie.models import SongIndex, Status, StatusSongRelation, SongRelation
 import math
+from random import random
 
-fake = faker.Faker()
+randomindex = lambda: random() * 2 - 1
 
 class SongIndexFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = SongIndex
 
     status = factory.SubFactory('tests.factory.StatusFactory')
-    value0 = fake.random.random() * 2 - 1
-    value1 = fake.random.random() * 2 - 1
-    value2 = fake.random.random() * 2 - 1
-    value3 = fake.random.random() * 2 - 1
-    value4 = fake.random.random() * 2 - 1
-    value5 = fake.random.random() * 2 - 1
-    value6 = fake.random.random() * 2 - 1
-    value7 = fake.random.random() * 2 - 1
+    value0 = factory.LazyFunction(randomindex)
+    value1 = factory.LazyFunction(randomindex)
+    value2 = factory.LazyFunction(randomindex)
+    value3 = factory.LazyFunction(randomindex)
+    value4 = factory.LazyFunction(randomindex)
+    value5 = factory.LazyFunction(randomindex)
+    value6 = factory.LazyFunction(randomindex)
+    value7 = factory.LazyFunction(randomindex)
     version = 0
 
     @factory.post_generation

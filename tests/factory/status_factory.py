@@ -30,7 +30,9 @@ class StatusFactory(factory.django.DjangoModelFactory):
         return True if self.epoch == 25 and self.validity else False
 
     @factory.post_generation
-    def charts(obj, create, extracted, **kwargs):
+    def charts(obj, create, extracted, **kwvars):
+        kwargs = {'max_view': fake.random.randint(10, 5000)}
+        kwargs.update(kwvars)
         ChartFactory.create_batch(obj.epoch, status=obj, **kwargs)
 
     @factory.post_generation

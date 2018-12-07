@@ -37,8 +37,11 @@ class StatusFactory(factory.django.DjangoModelFactory):
 
     @factory.post_generation
     def tags(obj, create, extracted, **kwargs):
-        for tag in fake.words(nb=10, unique=True):
-            IdtagFactory.create(status=obj, tagname=tag)
+        for i, tag in enumerate( fake.words(nb=10, unique=True) ):
+            if 'tags' in kwargs and len(kwargs['tags']) > i:
+                IdtagFactory.create(status=obj, tagname=kwargs['tags'][i])
+            else:
+                IdtagFactory.create(status=obj, tagname=tag)
 
     @factory.post_generation
     def indexes(obj, create, extracted, **kwargs):

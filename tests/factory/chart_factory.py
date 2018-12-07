@@ -42,9 +42,6 @@ class ChartFactory(factory.django.DjangoModelFactory):
 
     @factory.lazy_attribute
     def mylist(self):
-        if self.status.chart_set.last():
-            print(self.status.chart_set.last().mylist)
-        print(self.max_view)
         if self.status.chart_set.exists():
             return fake.random.randint(
                 a=self.status.chart_set.last().mylist,

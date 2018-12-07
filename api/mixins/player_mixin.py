@@ -25,7 +25,7 @@ TAG_BLACKLIST = {
     '日刊トップテン！VOCALOID＆something',
     'VOCALOIDメドレー',
 }
-POSITION_STEP = 0.1
+POSITION_STEP = 0.05
 VERSION = settings.LATEST_ANALYZER_MODEL_VERSION
 
 class PlayerMixIn(BaseMapSearchMixIn):

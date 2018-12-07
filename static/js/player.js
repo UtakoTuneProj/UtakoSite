@@ -4,8 +4,9 @@ var positions = []
 
 function getNextMovie(){
     axios
-    .get(
-        '/api/player/')
+    .get(initial && initial_mvid
+        ? '/api/player?origin_id='+initial_mvid
+        : '/api/player')
     .then( response => ( response.data.results[0].id ) )
     .then( mvid => ( app.mvid = mvid ) )
     .catch( error => ( console.log(error) ) )
@@ -52,13 +53,16 @@ Vue.component('niconico-player', {
     template: '<iframe class="embed-responsive-item" frameborder="no" scrolling="no" allow="fullscreen" id="player"></iframe>'
 })
 
+const r = new RegExp("[?&]origin_id=(([^&#]*)|&|#|$)").exec( location.search )[2]
+const initial_mvid = r ? r : null
+
 const app = new Vue({
     el: '#vuePlayer',
     data:{
         mvid: null,
     },
     created: function(){
-        getNextMovie()
+        getNextMovie();
     },
     computed:{
         playerComponent: function(){ return this.mvid ? 'niconico-player' : 'player-loading' },

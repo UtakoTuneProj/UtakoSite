@@ -34,10 +34,11 @@ class PlayerMixIn(BaseMapSearchMixIn):
     def get_context_from_request(self, request):
         get_request = request.GET.get
         context = super().get_context_from_request(request)
-        context['played'] = request.session['played'] if 'played' in request.session else []
 
         if get_request('origin_id'):
             context['origin_id'] = get_request('origin_id')
+            request.session['played'] = []
+        context['played'] = request.session['played'] if 'played' in request.session else []
 
         self.session = request.session
 

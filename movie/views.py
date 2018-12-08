@@ -84,6 +84,7 @@ def detail(request, movie_id):
     movie = get_object_or_404(Status, id = movie_id)
     chart = Chart.objects.filter(status_id = movie_id)
     tags = Idtag.objects.filter(status_id = movie_id)
+    song_index = Status.objects.get(pk=movie_id).songindex_set.all()
     related = StatusSongRelation.objects.filter(
         status_id = movie_id
     ).prefetch_related(
@@ -106,6 +107,7 @@ def detail(request, movie_id):
         'tags': tags,
         'related': related,
         'card_content': card_content,
+        'song_index': song_index,
     })
 
 def detail_redirect(request):

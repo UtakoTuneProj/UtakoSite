@@ -16,9 +16,11 @@
       </div>
     </div>
   </div>
-  <div class="row my-2">
-    <a class="col-lg-4 offset-lg-4 btn btn-primary" href="/player?origin_id={{movie.id}}">この動画を起点にして連続再生</a>
-  </div>
+  {% if song_index %}
+    <div class="row my-2">
+      <a class="col-lg-4 offset-lg-4 btn btn-primary" href="/player?origin_id={{movie.id}}">この動画を起点にして連続再生</a>
+    </div>
+  {% endif %}
 
   <!-- Ads -->
   <div class="row my-4">

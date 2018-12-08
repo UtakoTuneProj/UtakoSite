@@ -1,1 +1,0 @@
-from movie.models import *

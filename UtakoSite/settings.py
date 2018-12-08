@@ -44,7 +44,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = [
     'movie.apps.MovieConfig',
-    'tag.apps.TagConfig',
     'register.apps.RegisterConfig',
     'mypage.apps.MypageConfig',
     'api.apps.ApiConfig',

@@ -22,7 +22,6 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('movie/', include('movie.urls')),
-    path('tag/', include('tag.urls')),
     path('auth/', include('register.urls')),
     path('mypage/', include('mypage.urls')),
     path('pages/', include('django.contrib.flatpages.urls')),

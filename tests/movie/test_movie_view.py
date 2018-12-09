@@ -115,18 +115,6 @@ class TestMovieViewIndex(TestMovieViewAbstract):
         # returns max_view <= 100
         assert response.context['page_obj'].paginator.count == count
 
-    @patch_getthumbinfo
-    def test_tags(self):
-        statuses = StatusFactory.create_batch(40)
-        target_tag = statuses[0].idtag_set.first().tagname
-        statuses += StatusFactory.create_batch(10, tags__tags = [target_tag])
-        response = self.c.get('/movie/', {'tags': target_tag})
-        count = sum(1 for s in statuses if s.idtag_set.filter(tagname=target_tag).exists() )
-        # status must be OK
-        assert response.status_code == 200
-        # returns max_view <= 100
-        assert response.context['page_obj'].paginator.count == count
-
 @pytest.mark.django_db
 class TestMovieViewDetail(TestMovieViewAbstract):
     @patch_getthumbinfo

@@ -1,0 +1,48 @@
+{% extends "appbase.html" %}
+
+{% block title %}
+  新規登録
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="card my-5 col-lg-6 offset-lg-3">
+    <div class="card-body">
+      {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+          {% for _, err_state in form.errors.items %}
+            {{err_state}}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="my-2">
+        <form method="post" action="{% url 'register:register' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            {{form.username.label_tag}}
+            {{form.username}}
+          </div>
+          <div class="form-group">
+            {{form.email.label_tag}}
+            {{form.email}}
+          </div>
+          <div class="form-group">
+            {{form.password1.label_tag}}
+            {{form.password1}}
+          </div>
+          <div class="form-group">
+            {{form.password2.label_tag}}
+            {{form.password2}}
+          </div>
+          <input type="submit" class="btn btn-primary float-right my-2" value="登録" />
+          <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+      </div>
+      <a href="{% url "social:begin" "google-oauth2" %}"><div class="btn btn-primary col-12 my-2">Googleでログイン</div></a>
+      <a href="{% url "social:begin" "twitter" %}"><div class="btn btn-primary col-12 my-2">Twitterでログイン</div></a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "appbase.html" %}
+{% load static %}
+{% block title %}
+PLAYER
+{% endblock title %}
+
+{% block extra_css %}
+  <link rel="stylesheet" type="text/css" href="{%static 'css/player.css'%}">
+{% endblock %}
+
+{% block content %}
+<div id="vuePlayer">
+  <div class="row">
+    <div class="col-lg-10 offset-lg-1">
+      <div v-bind:class="mvid ? 'embed-responsive embed-responsive-16by9' : 'loading'">
+        <component v-bind:is="playerComponent" v-bind:src="url"></component>
+      </div>
+    </div>
+  </div>
+  <div class="row my-4">
+    <div id="controller" class="mx-auto" style="width:300px">
+      <a v-bind:href="tweetUri" target="_blank" class="col-3 offset-1 btn btn-primary">
+        <i class="icon-social-twitter" style="font-size:40px"></i>
+      </a>
+      <button v-if="playing" v-on:click="pause" class="col-4 btn btn-dark">
+        <i class="icon-control-pause" style="font-size:40px"></i>
+      </button>
+      <button v-else v-on:click="play" class="col-4 btn btn-dark">
+        <i class="icon-control-play" style="font-size:40px"></i>
+      </button>
+
+      <button v-on:click="next" class="col-3 btn btn-dark">
+        <i class="icon-control-forward" style="font-size:40px"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Ads -->
+<div class="row my-4">
+  <div class="col">
+    {% include "ads.html" %}
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="{%static 'js/player.js'%}"></script>
+{% endblock extra_js %}

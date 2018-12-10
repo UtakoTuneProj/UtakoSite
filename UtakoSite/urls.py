@@ -22,9 +22,14 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('movie/', include('movie.urls')),
-    path('tag/', include('tag.urls')),
+    path('auth/', include('register.urls')),
+    path('mypage/', include('mypage.urls')),
     path('pages/', include('django.contrib.flatpages.urls')),
-    re_path('^$', views.flatpage, {'url': 'index/'})
+    path('api/', include('api.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('', include('social_django.urls', namespace='social')),
+    path('player/', views.flatpage, {'url': 'player/'}),
+    re_path('^$', views.flatpage, {'url': 'index/'}),
 ]
 
 if settings.DEBUG:

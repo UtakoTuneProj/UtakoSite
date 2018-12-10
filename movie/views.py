@@ -1,12 +1,33 @@
-from django.shortcuts import render, get_object_or_404,redirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Min, Max, Count, F, Exists, OuterRef
-from django.views.generic.list import ListView
-from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, StatusSongRelation
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
+from urllib.parse import urlencode
 from xml.etree import ElementTree
 from datetime import datetime as dt
+import json
+import asyncio
+import copy
+
+from django.shortcuts import render, get_object_or_404,redirect
+from django.db.models import F
+from django.views.generic.list import ListView
+
+from .models import Status, Chart, Idtag, Tagcolor, SongIndex, SongRelation, StatusSongRelation
+from UtakoSite.mixins import StatusSearchMixIn
+
+NICOAPI_KWARGS = {
+    'q',
+    'targets',
+    'filters',
+    'jsonFilter',
+    '_sort',
+}
+MINIMUM_KWARGS = {
+    'q',
+    'targets',
+    '_sort'
+}
+
+NICOAPI_BASE = "https://api.search.nicovideo.jp/api/v2/video/contents/search?"
 
 def parse_nicoapi(movie_id):
     def no_response():
@@ -49,59 +70,67 @@ def parse_nicoapi(movie_id):
 
     return ret
 
+class MovieIndexMixIn(StatusSearchMixIn):
+    async def get_nicoapi(self, **kwargs):
+        uri = NICOAPI_BASE + urlencode(kwargs)
+        req = Request(uri)
+        with urlopen(req) as _:
+            nicoapi_result = json.loads(_.read().decode())
+        return [m['contentId'] for m in nicoapi_result["data"]]
+
+    async def get_nicoapis(self, result_count, **kwargs):
+        pages = min(result_count, 1600) // kwargs['_limit'] + 1
+        api_kwargs = []
+        for i in range(pages):
+            api_kwargs.append(copy.deepcopy(kwargs))
+            api_kwargs[-1]['_offset'] = kwargs['_limit'] * i
+        results = await asyncio.gather(*[self.get_nicoapi(**k) for k in api_kwargs])
+        return sum(results, [])
+
+    def unify_nico_search_api(self, context):
+        nico_api = context['nico_api']
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        minimum_search = {}
+        for k in MINIMUM_KWARGS:
+            minimum_search[k] = nico_api[k]
+        uri = NICOAPI_BASE + urlencode(minimum_search)
+        req = Request(uri)
+        with urlopen(req) as _:
+            result_count = json.loads(_.read().decode())['meta']['totalCount']
+
+        return loop.run_until_complete(self.get_nicoapis(result_count, **nico_api))
+
+    def _get_queryset(self, objects, context):
+        if context['nico_api']['q'] not in ['', None]:
+            filter_list = self.unify_nico_search_api(context)
+            objects = objects.filter(id__in = filter_list)
+
+        return super()._get_queryset(objects, context).prefetch_related('statussongrelation_set')
+
+    def get_context_from_request(self, request):
+        get_request = getattr(request, request.method).get
+        context = super().get_context_from_request(request)
+        context['nico_api'] = {
+            'q': None,
+            'targets': 'tags',
+            'fields': 'contentId',
+            '_sort': '-startTime',
+            '_context': 'https://utako-tune.jp/',
+            '_limit': 100
+        }
+        for keyword in NICOAPI_KWARGS:
+            if get_request(keyword) not in ['', None]:
+                context['nico_api'][keyword] = get_request(keyword)
+
+        return context
+
 # Create your views here.
-class IndexView(ListView):
+class IndexView(ListView, MovieIndexMixIn):
     model = Status
     template_name = 'movie/index.html'
     allow_empty = True
     paginate_by = 24
-    ordering = '-postdate'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update(self.get_context_from_request(self.request))
-        context.update(self.refer_from_nicoapi(context['page_obj']))
-        return context
-
-    def get_context_from_request(self, request):
-        get_request = request.GET.get
-        context = {}
-        if get_request('min_view') not in ['', None]:
-            try:
-                context['min_view'] = int(get_request('min_view'))
-                if context['min_view'] < 0:
-                    del context['min_view']
-            except ValueError:
-                pass
-
-        if get_request('max_view') not in ['', None]:
-            try:
-                context['max_view'] = int(get_request('max_view'))
-                if context['max_view'] < 0:
-                    del context['max_view']
-            except ValueError:
-                pass
-
-        if get_request('sortby') in ['', None]:
-            context['sortby'] = self.ordering
-        else:
-            context['sortby'] = get_request('sortby')
-            if context['sortby'] not in ['postdate', '-postdate', 'max_view', '-max_view']:
-                raise ValueError
-        self.ordering = context['sortby']
-
-        if get_request('not_analyzed') == 'on':
-            context['not_analyzed'] = True
-        else:
-            context['not_analyzed'] = False
-
-        if get_request('tags') not in ['', None]:
-            context['tags'] = get_request('tags')
-
-        if get_request('perpage') not in ['', None]:
-            self.paginate_by = get_request('perpage')
-
-        return context
 
     def refer_from_nicoapi(self, page_obj):
         context = {'card_content': []}
@@ -111,35 +140,23 @@ class IndexView(ListView):
             context['card_content'].append(ret)
         return context
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(super().get_context_from_request(self.request))
+        context.update(self.refer_from_nicoapi(context['page_obj']))
+        return context
+
     def get_queryset(self):
-        context = self.get_context_from_request(self.request)
-        movies_list = Status.objects
+        context = super().get_context_from_request(self.request)
+        objects = Status.objects
 
-        if not context['not_analyzed']:
-            movies_list = movies_list.analyzed()
-
-        if 'tags' in context:
-            movies_list = movies_list.filter(
-                idtag__tagname = context['tags']
-            )
-
-        if 'min_view' in context\
-            or 'max_view' in context \
-            or self.ordering in ['max_view', '-max_view']:
-            movies_list = movies_list.annotate(
-                max_view = Max('chart__view')
-            )
-        if 'min_view' in context:
-            movies_list = movies_list.filter(max_view__gte = context['min_view'])
-        if 'max_view' in context:
-            movies_list = movies_list.filter(max_view__lte = context['max_view'])
-
-        return movies_list.order_by(context['sortby'])
+        return super()._get_queryset(objects, context)
 
 def detail(request, movie_id):
     movie = get_object_or_404(Status, id = movie_id)
     chart = Chart.objects.filter(status_id = movie_id)
     tags = Idtag.objects.filter(status_id = movie_id)
+    song_index = Status.objects.get(pk=movie_id).songindex_set.all()
     related = StatusSongRelation.objects.filter(
         status_id = movie_id
     ).prefetch_related(
@@ -162,6 +179,7 @@ def detail(request, movie_id):
         'tags': tags,
         'related': related,
         'card_content': card_content,
+        'song_index': song_index,
     })
 
 def detail_redirect(request):

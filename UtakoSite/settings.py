@@ -13,16 +13,23 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import sys
 
-if sys.argv[1:2] == ['test'] or 'pytest' in sys.argv[0]:
+if sys.argv[1:2] == ['test']\
+    or 'pytest' in sys.argv[0]\
+    or os.environ.get('DJANGO_ENV') == 'test':
     from .test_secrets import SECRET_KEY, DATABASES
     from .test_secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
     from .test_secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS
     from .test_secrets import STATIC_URL
+    from .test_secrets import LATEST_ANALYZER_MODEL_VERSION
 else:
     from .secrets import SECRET_KEY, DATABASES
-    from .secrets import ALLOWED_HOSTS, INTERNAL_IPS, DEBUG
+    from .secrets import ALLOWED_HOSTS, DEBUG
     from .secrets import GOOGLE_AD_CLIENT, GOOGLE_ANALYTICS
     from .secrets import STATIC_URL
+    from .secrets import SOCIAL_AUTH_TWITTER_KEY, SOCIAL_AUTH_TWITTER_SECRET
+    from .secrets import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+    from .secrets import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+    from .secrets import LATEST_ANALYZER_MODEL_VERSION
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,7 +44,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = [
     'movie.apps.MovieConfig',
-    'tag.apps.TagConfig',
+    'register.apps.RegisterConfig',
+    'mypage.apps.MypageConfig',
+    'api.apps.ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,9 +55,13 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
+    'django_registration',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,6 +72,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'UtakoSite.urls'
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 TEMPLATES = [
     {
@@ -71,6 +90,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
                 'UtakoSite.context_processors.google_ad_client.google_ad_client',
                 'UtakoSite.context_processors.google_analytics.google_analytics',
                 'UtakoSite.context_processors.isdebug.isdebug',
@@ -154,4 +175,24 @@ if DEBUG:
 
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS': False,
+    }
+
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    INTERNAL_IPS = ['127.0.0.1']
+
+if not DEBUG:
+    SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+
+LOGIN_URL = 'register:login'
+LOGIN_REDIRECT_URL = 'movie:index'
+SOCIAL_AUTH_LOGIN_ERROR_URL = 'register:login'
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+ACCOUNT_ACTIVATION_DAYS = 1
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSON_CLASSES': [
+        'rest_framework.permissons.DjangoModelPermissonsOrAnonReadOnly'
+        ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
     }

@@ -1,3 +1,4 @@
 .git/
 collect_static/
 static/
+tests/

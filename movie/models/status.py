@@ -15,6 +15,9 @@ class Status(models.Model):
     iscomplete = models.IntegerField(db_column='isComplete')  # Field name made lowercase.
     postdate = models.DateTimeField(blank=True, null=True)
     analyzegroup = models.IntegerField(db_column='analyzeGroup', blank=True, null=True)  # Field name made lowercase.
+    score = models.FloatField(blank=True, null=True)
+    # 0: from raw, 1: forward estimate, -1: backword estimate
+    score_status = models.IntegerField(blank=True, null=True)
 
     @property
     def isanalyzed(self):

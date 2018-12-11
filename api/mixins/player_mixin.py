@@ -24,6 +24,8 @@ TAG_BLACKLIST = {
     '日刊VOCALOIDランキング',
     '日刊トップテン！VOCALOID＆something',
     'VOCALOIDメドレー',
+    'XFD',
+    'クロスフェードデモ'
 }
 POSITION_STEP = 0.03
 VERSION = settings.LATEST_ANALYZER_MODEL_VERSION

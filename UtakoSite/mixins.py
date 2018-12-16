@@ -47,7 +47,9 @@ class StatusSearchMixIn():
             'postdate',
             '-postdate',
             'max_view',
-            '-max_view'
+            '-max_view',
+            'score',
+            '-score'
         ]:
             context['sortby'] = get_request('sortby')
         else:

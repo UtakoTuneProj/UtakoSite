@@ -14,8 +14,6 @@ from ..models import Status, SongIndex
 import api.views
 
 TAG_BLACKLIST = {
-    'MikuMikuDance',
-    'MMD',
     'ボカロカラオケDB',
     'ニコカラ',
     '歌ってみた',
@@ -117,6 +115,8 @@ class PlayerMixIn(BaseMapSearchMixIn):
         tags = set(x.text for x in i.font)
 
         if not tags.isdisjoint( TAG_BLACKLIST ):
+            return False
+        if 'VOCALOID' not in tags:
             return False
 
         return True

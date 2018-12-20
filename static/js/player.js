@@ -5,11 +5,12 @@ var positions = []
 function getNextMovie(){
     axios
     .get(initial && initial_mvid
-        ? '/api/player?origin_id='+initial_mvid
-        : '/api/player')
+        ? '/api/player/?origin_id='+initial_mvid
+        : '/api/player/')
     .then( response => ( response.data.results[0].id ) )
     .then( mvid => ( app.mvid = mvid ) )
     .catch( error => ( console.log(error) ) )
+    .then( () => ( app.broken = true ) )
 }
 
 function moveMovie(e) {
@@ -67,6 +68,10 @@ Vue.component('niconico-player', {
     template: '<iframe class="embed-responsive-item" frameborder="no" scrolling="no" allow="fullscreen" id="player"></iframe>'
 })
 
+Vue.component('not-embeddable', {
+    template: '<p class="my-auto">この動画はUTAKO TUNEでは対応していません。<br />考えられる理由: UTAKO TUNEで追跡していない、埋め込みが許可されていないなど</p>'
+})
+
 const r = new RegExp("[?&]origin_id=(([^&#]*)|&|#|$)").exec( location.search )
 const initial_mvid = r ? (r[2] ? r[2] : null) : null
 
@@ -75,12 +80,13 @@ const app = new Vue({
     data:{
         mvid: null,
         playing: false,
+        broken: false,
     },
     created: function(){
         getNextMovie();
     },
     computed:{
-        playerComponent: function(){ return this.mvid ? 'niconico-player' : 'player-loading' },
+        playerComponent: function(){ return this.broken ? 'not-embeddable' : ( this.mvid ? 'niconico-player' : 'player-loading' ) },
         url: function(){ return 'https://embed.nicovideo.jp/watch/' + this.mvid + '?jsapi=1' },
         tweetUri: function(){
             return "https://twitter.com/intent/tweet?text="

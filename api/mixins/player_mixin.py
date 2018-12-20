@@ -4,6 +4,7 @@ from urllib.request import Request, urlopen
 from xml.etree import ElementTree
 
 from django.conf import settings
+from django.http import Http404
 import numpy as np
 from numpy import linalg
 
@@ -54,7 +55,10 @@ class PlayerMixIn(BaseMapSearchMixIn):
 
         self.session['played'] = context['played'] + [next_id]
 
-        return Status.objects.filter(pk=next_id)
+        try:
+            return Status.objects.get(pk=next_id)
+        except Status.DoesNotExist:
+            raise Http404("selected movie {} is not tracked".format(next_id))
 
     def search_next_song(self, context, page=1):
         pos = self.get_nextpos(context)
@@ -96,8 +100,6 @@ class PlayerMixIn(BaseMapSearchMixIn):
         return previous_position + POSITION_STEP * np.random.normal(1, 0.25) * vec
 
     def is_playable(self, mvid, context):
-        tree = {}
-
         if mvid in context['played']:
             return False
 
@@ -105,14 +107,15 @@ class PlayerMixIn(BaseMapSearchMixIn):
         with urlopen(req) as response:
             root = ElementTree.fromstring(response.read())
 
-        if root.get('status') == 'ok':
-            for child in root[0]:
-                if child.tag == 'tags':
-                    tree['tags'] = set(x.text for x in child)
-        else:
+        if not root.get('status') == 'ok':
             return False
 
-        if not tree['tags'].isdisjoint( TAG_BLACKLIST ):
+        if root.find('../.embeddable') == 0:
+            return False
+
+        tags = set(x.text for x in i.font)
+
+        if not tags.isdisjoint( TAG_BLACKLIST ):
             return False
 
         return True

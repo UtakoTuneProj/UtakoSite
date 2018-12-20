@@ -18,4 +18,4 @@ class BaseMapSearchMixIn(StatusSearchMixIn):
         objects = objects.filter(
             songindex__version=context["version"]
         )
-        return super()._get_queryset(objects, context).prefetch_related('chart_set', 'songindex_set')
+        return super()._get_queryset(objects, context).prefetch_related('songindex_set')

@@ -3,14 +3,18 @@ var played = []
 var positions = []
 
 function getNextMovie(){
+    var params = {
+        time_factor: time_factor,
+        score_factor: score_factor,
+    }
+    if (initial) {
+        params.origin_id = initial_mvid;
+    }
     axios
-    .get(initial && initial_mvid
-        ? '/api/player/?origin_id='+initial_mvid
-        : '/api/player/')
+    .get('/api/player/', {params: params})
     .then( response => ( response.data.results[0].id ) )
     .then( mvid => ( app.mvid = mvid ) )
-    .catch( error => ( console.log(error) ) )
-    .then( () => ( app.broken = true ) )
+    .catch( error => function(){ console.log(error); app.broken = true; } )
 }
 
 function moveMovie(e) {
@@ -72,8 +76,16 @@ Vue.component('not-embeddable', {
     template: '<p class="my-auto">この動画はUTAKO TUNEでは対応していません。<br />考えられる理由: UTAKO TUNEで追跡していない、埋め込みが許可されていないなど</p>'
 })
 
-const r = new RegExp("[?&]origin_id=(([^&#]*)|&|#|$)").exec( location.search )
+var r
+
+r = new RegExp("[?&]origin_id=(([^&#]*)|&|#|$)").exec( location.search )
 const initial_mvid = r ? (r[2] ? r[2] : null) : null
+
+r = new RegExp("[?&]time_factor=(([^&#]*)|&|#|$)").exec( location.search )
+const time_factor = r ? (r[2] ? r[2] : null) : null
+
+r = new RegExp("[?&]score_factor=(([^&#]*)|&|#|$)").exec( location.search )
+const score_factor = r ? (r[2] ? r[2] : null) : null
 
 const app = new Vue({
     el: '#vuePlayer',

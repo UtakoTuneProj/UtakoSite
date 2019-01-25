@@ -68,6 +68,8 @@ class PlayerMixIn(BaseMapSearchMixIn):
                 'version': VERSION,
                 'not_analyzed': False,
                 'sortby': 'distance',
+                'time_factor': context['time_factor'],
+                'score_factor': context['score_factor'],
             }
         )[(page-1)*5:page*5]
 

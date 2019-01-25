@@ -3,8 +3,8 @@ import pytest
 import json
 from django.test import Client
 
-from tests.helpers import StatusCreationHelper as sch
 from tests.factory import StatusFactory
+from django.db import connection
 
 @pytest.mark.django_db
 class TestRangeSearchIndex:
@@ -36,6 +36,8 @@ class TestPointSearchIndex:
     now = datetime.now()
 
     def test_default(self):
+        with connection.cursor() as cursor:
+            cursor.execute('select load_extension("./libsqlitefunctions");')
         statuses = StatusFactory.create_batch(10)
         origin = statuses[0].songindex_set.last().values
         statuses.sort(
@@ -50,9 +52,10 @@ class TestPointSearchIndex:
             'http://testserver/api/vocalosphere/point/',
             data={
                 'origin': '[{}]'.format(','.join(map(lambda x:'{}'.format(x), origin))),
+                'time_factor': 0,
             },
         )
         result = json.loads(response.content.decode())
-        # no data range query must be error
+        #query must be ok
         assert response.status_code == 200
         assert [ x['id'] for x in result['results'] ] == [ s.id for s in statuses ]

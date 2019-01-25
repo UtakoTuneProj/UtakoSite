@@ -5,3 +5,5 @@ __pycache__/
 htmlcov/
 collect_static
 .coverage
+extension-functions.c
+libsqlitefunctions.so

@@ -26,6 +26,7 @@ TAG_BLACKLIST = {
     'XFD',
     'クロスフェードデモ',
     'VOCALOID-CDデモ',
+    '例のアレ',
 }
 POSITION_STEP = 0.1
 VERSION = settings.LATEST_ANALYZER_MODEL_VERSION

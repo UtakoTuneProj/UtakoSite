@@ -56,7 +56,7 @@ class PlayerMixIn(BaseMapSearchMixIn):
         self.session['played'] = context['played'] + [next_id]
 
         try:
-            return Status.objects.get(pk=next_id)
+            return Status.objects.filter(pk=next_id)
         except Status.DoesNotExist:
             raise Http404("selected movie {} is not tracked".format(next_id))
 
@@ -69,6 +69,8 @@ class PlayerMixIn(BaseMapSearchMixIn):
                 'version': VERSION,
                 'not_analyzed': False,
                 'sortby': 'distance',
+                'time_factor': context['time_factor'],
+                'score_factor': context['score_factor'],
             }
         )[(page-1)*5:page*5]
 
@@ -113,7 +115,7 @@ class PlayerMixIn(BaseMapSearchMixIn):
         if root.find('../.embeddable') == 0:
             return False
 
-        tags = set(x.text for x in i.font)
+        tags = set(x.text for x in root.findall('.//tag'))
 
         if not tags.isdisjoint( TAG_BLACKLIST ):
             return False

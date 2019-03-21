@@ -2,6 +2,10 @@ var initial = true
 var played = []
 var positions = []
 
+const SCORE_HIGH = 5
+const SCORE_LOW = -5
+const TIME_RECENT = 5
+
 function getNextMovie(){
     var params = {
         time_factor: time_factor,
@@ -24,6 +28,12 @@ function getSettings(){
     .then( function(){
         if (app.settings.time_factor == null || app.settings.score_factor == null){
             app.settings_show();
+        }else{
+            time_symbol = app.settings.time_factor >= TIME_RECENT ?  '0' : '1';
+            score_symbol = app.settings.score_factor >= SCORE_HIGH ?  '2' : (
+                app.settings.time_factor <= SCORE_LOW ? '0' : '1'
+            );
+            document.forms.settingsForm.elements.search_factor.value = time_symbol + score_symbol;
         }
     })
 }
@@ -155,15 +165,15 @@ function submit_settings(){
     var score_factor
 
     if(search_factor[0] == '0'){
-        time_factor = 5
+        time_factor = TIME_RECENT
     }else{
         time_factor = 0
     }
 
     if(search_factor[1] == '0'){
-        score_factor = -5
+        score_factor = SCORE_LOW
     }else if(search_factor[1] == '2'){
-        score_factor = 5
+        score_factor = SCORE_HIGH
     }else{
         score_factor = 0
     }

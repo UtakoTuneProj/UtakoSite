@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers, serializers, viewsets
-from .views import StatusList, StatusRetrieve, MapRangeList, MapPointList, PlayerList
+from .views import StatusList, StatusRetrieve, MapRangeList, MapPointList, PlayerList, SettingsRetrieve
 from rest_framework import routers
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
     path('vocalosphere/range/', MapRangeList.as_view()),
     path('vocalosphere/point/', MapPointList.as_view()),
     path('player/', PlayerList.as_view()),
+    path('settings/', SettingsRetrieve.as_view()),
 ]

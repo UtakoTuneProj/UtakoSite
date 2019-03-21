@@ -14,11 +14,15 @@ class BaseMapSearchMixIn(StatusSearchMixIn):
 
         if get_request('score_factor') not in ['', None]:
             context['score_factor'] = float(get_request('score_factor')) / 10
+        elif 'score_factor' in settings:
+            context['score_factor'] = settings['score_factor'] / 10
         else:
             context['score_factor'] = float(0)
 
         if get_request('time_factor') not in ['', None]:
             context['time_factor'] = float(get_request('time_factor')) / 10
+        elif 'time_factor' in settings:
+            context['time_factor'] = settings['time_factor'] / 10
         else:
             context['time_factor'] = float(0)
 

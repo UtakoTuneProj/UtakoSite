@@ -10,11 +10,22 @@ function getNextMovie(){
     if (initial) {
         params.origin_id = initial_mvid;
     }
-    axios
+    return axios
     .get('/api/player/', {params: params})
     .then( response => ( response.data.results[0].id ) )
     .then( mvid => ( app.mvid = mvid ) )
     .catch( error => function(){ console.log(error); app.broken = true; } )
+}
+
+function getSettings(){
+    return axios
+    .get('/api/settings')
+    .then( response => ( app.settings = response.data ) )
+    .then( function(){
+        if (app.settings.time_factor == null){
+            console.log('time_factor is not set')
+        }
+    })
 }
 
 function moveMovie(e) {
@@ -95,7 +106,7 @@ const app = new Vue({
         broken: false,
     },
     created: function(){
-        getNextMovie();
+        getSettings().then(getNextMovie())
     },
     computed:{
         playerComponent: function(){ return this.broken ? 'not-embeddable' : ( this.mvid ? 'niconico-player' : 'player-loading' ) },

@@ -36,6 +36,7 @@ class TestPointSearchIndex:
     now = datetime.now()
 
     def test_default(self):
+        connection.connection.enable_load_extension(True)
         with connection.cursor() as cursor:
             cursor.execute('select load_extension("./libsqlitefunctions");')
         statuses = StatusFactory.create_batch(10)

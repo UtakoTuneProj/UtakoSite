@@ -22,8 +22,8 @@ function getSettings(){
     .get('/api/settings')
     .then( response => ( app.settings = response.data ) )
     .then( function(){
-        if (app.settings.time_factor == null){
-            console.log('time_factor is not set')
+        if (app.settings.time_factor == null || app.settings.score_factor == null){
+            app.settings_show();
         }
     })
 }
@@ -104,6 +104,7 @@ const app = new Vue({
         mvid: null,
         playing: false,
         broken: false,
+        showModal: false,
     },
     created: function(){
         getSettings().then(getNextMovie())
@@ -143,5 +144,30 @@ const app = new Vue({
                 }, origin
             );
         },
+        settings_show: () => ($('#settingsModal').modal('show')),
+        settings_hide: () => ($('#settingsModal').modal('hide')),
     },
 });
+
+function submit_settings(){
+    var search_factor = document.forms.settingsForm.elements.search_factor.value;
+    var time_factor
+    var score_factor
+
+    if(search_factor[0] == '0'){
+        time_factor = 5
+    }else{
+        time_factor = 0
+    }
+
+    if(search_factor[1] == '0'){
+        score_factor = -5
+    }else if(search_factor[1] == '2'){
+        score_factor = 5
+    }else{
+        score_factor = 0
+    }
+
+    axios.patch('/api/settings/', {score_factor: score_factor, time_factor: time_factor})
+    app.settings_hide()
+}

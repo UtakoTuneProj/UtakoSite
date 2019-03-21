@@ -10,6 +10,101 @@ PLAYER
 
 {% block content %}
 <div id="vuePlayer">
+  <div
+    class="modal modal-lg"
+    id="settingsModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="settingsModalLabel"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form
+          enctype='application/json'
+          name='settingsForm'
+        >
+          <div class="modal-header">
+            <h5 class="modal-title">
+              プレイヤーの設定
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th colspan="2" rowspan="2"></th>
+                  <th colspan="3" scope="col.">再生数</th>
+                </tr>
+                <tr>
+                  <th scope="col">少</th>
+                  <th scope="col">おまかせ</th>
+                  <th scope="col">多</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row" rowspan="2">投稿日</th>
+                  <th scope="row">最近</th>
+                  <td>
+                    <div class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" name="search_factor" value="00" id="radio00">
+                      <label class="custom-control-label table-radiolabel" for="radio00"></label>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" name="search_factor" value="01" id="radio01">
+                      <label class="custom-control-label table-radiolabel" for="radio01"></label>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" name="search_factor" value="02" id="radio02">
+                      <label class="custom-control-label table-radiolabel" for="radio02"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">おまかせ</th>
+                  <td>
+                    <div class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" name="search_factor" value="10" id="radio10">
+                      <label class="custom-control-label table-radiolabel" for="radio10"></label>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" name="search_factor" value="11" id="radio11">
+                      <label class="custom-control-label table-radiolabel" for="radio11"></label>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" name="search_factor" value="12" id="radio12">
+                      <label class="custom-control-label table-radiolabel" for="radio12"></label>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onClick="submit_settings();">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-lg-10 offset-lg-1">
       <div v-bind:class="mvid ? 'embed-responsive embed-responsive-16by9' : 'loading'">
@@ -18,18 +113,21 @@ PLAYER
     </div>
   </div>
   <div class="row my-4">
-    <div id="controller" class="mx-auto" style="width:300px">
-      <a v-bind:href="tweetUri" target="_blank" class="col-3 offset-1 btn btn-primary">
+    <div id="controller" class="mx-auto" style="width:75%">
+      <a v-bind:href="tweetUri" target="_blank" class="col-2 offset-1 btn btn-primary">
         <i class="icon-social-twitter" style="font-size:40px"></i>
       </a>
-      <button v-if="playing" v-on:click="pause" class="col-4 btn btn-dark">
+      <button class="col-3 btn btn-dark" onClick='app.settings_show();'>
+        <i class="icon-settings" style="font-size:40px"></i>
+      </button>
+      <button v-if="playing" v-on:click="pause" class="col-3 btn btn-dark">
         <i class="icon-control-pause" style="font-size:40px"></i>
       </button>
-      <button v-else v-on:click="play" class="col-4 btn btn-dark">
+      <button v-else v-on:click="play" class="col-3 btn btn-dark">
         <i class="icon-control-play" style="font-size:40px"></i>
       </button>
 
-      <button v-on:click="next" class="col-3 btn btn-dark">
+      <button v-on:click="next" class="col-2 btn btn-dark">
         <i class="icon-control-forward" style="font-size:40px"></i>
       </button>
     </div>

@@ -1,7 +1,7 @@
 <div class="m-3">
   <form action='/movie/' method='get'>
     <div class="form-group">
-      <input class="form-control" name="q" value="{{ nico_api.tags }}" placeholder="検索ワード">
+      <input class="form-control" name="q" value="{% if nico_api.q %}{{ nico_api.q }}{% endif %}" placeholder="検索ワード">
     </div>
     <div class='form-row'>
       <div class="form-group col-md-3 offset-md-3 custom-control custom-checkbox">
@@ -24,12 +24,12 @@
           <option value="postdate"
             {% if sortby == "postdate" %} selected {% endif %}
           >古い順</option>
-          <option value="-max_view"
-            {% if sortby == "-max_view" %} selected {% endif %}
-          >再生数順</option>
-          <option value="max_view"
-            {% if sortby == "max_view" %} selected {% endif %}
-          >再生数逆順</option>
+          <option value="-score"
+            {% if sortby == "-score" %} selected {% endif %}
+          >再生スコア順</option>
+          <option value="score"
+            {% if sortby == "score" %} selected {% endif %}
+          >再生スコア逆順</option>
         </select>
       </div>
       <div class="form-group col-md-2">

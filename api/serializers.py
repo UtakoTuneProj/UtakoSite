@@ -8,14 +8,8 @@ class SongIndexSerializer(serializers.ModelSerializer):
         model = SongIndex
         fields = ['values',] + ['value{}'.format(i) for i in range(8)]
 
-class ChartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Chart
-        exclude = ('id', 'status')
-
 class StatusSerializer(serializers.ModelSerializer):
     songindex_set = SongIndexSerializer(many=True)
-    chart_set = ChartSerializer(many=True)
 
     class Meta:
         model = Status

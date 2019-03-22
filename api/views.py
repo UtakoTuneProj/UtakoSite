@@ -1,12 +1,13 @@
 from django.shortcuts import render
+from django.conf import settings
+from django.utils.module_loading import import_string
+
+from rest_framework import generics, mixins, views, response
+
+from UtakoSite.mixins import StatusSearchMixIn
 from .models import Status
 from .serializers import StatusSerializer
-from rest_framework import generics, mixins
-from UtakoSite.mixins import StatusSearchMixIn
 from .mixins import MapRangeSearchMixIn, MapPointSearchMixIn, PlayerMixIn
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-
 # Create your views here.
 
 # ViewSets define the view behavior.
@@ -41,3 +42,14 @@ class MapPointList(BaseUtakoList, mixins.ListModelMixin, MapPointSearchMixIn):
 
 class PlayerList(BaseUtakoList, mixins.ListModelMixin, PlayerMixIn):
     pass
+
+class SettingsRetrieve(views.APIView):
+    def get(self, request):
+        return response.Response( request.session )
+    def put(self, request):
+        request.session = request.data
+        return response.Response( request.session )
+    def patch(self, request):
+        for key in request.data.keys():
+            request.session[key] = request.data[key]
+        return response.Response( request.session )

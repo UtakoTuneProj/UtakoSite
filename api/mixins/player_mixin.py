@@ -4,6 +4,7 @@ from urllib.request import Request, urlopen
 from xml.etree import ElementTree
 
 from django.conf import settings
+from django.http import Http404
 import numpy as np
 from numpy import linalg
 
@@ -13,8 +14,6 @@ from ..models import Status, SongIndex
 import api.views
 
 TAG_BLACKLIST = {
-    'MikuMikuDance',
-    'MMD',
     'ボカロカラオケDB',
     'ニコカラ',
     '歌ってみた',
@@ -24,8 +23,12 @@ TAG_BLACKLIST = {
     '日刊VOCALOIDランキング',
     '日刊トップテン！VOCALOID＆something',
     'VOCALOIDメドレー',
+    'XFD',
+    'クロスフェードデモ',
+    'VOCALOID-CDデモ',
+    '例のアレ',
 }
-POSITION_STEP = 0.03
+POSITION_STEP = 0.1
 VERSION = settings.LATEST_ANALYZER_MODEL_VERSION
 
 class PlayerMixIn(BaseMapSearchMixIn):
@@ -52,7 +55,10 @@ class PlayerMixIn(BaseMapSearchMixIn):
 
         self.session['played'] = context['played'] + [next_id]
 
-        return Status.objects.filter(pk=next_id)
+        try:
+            return Status.objects.filter(pk=next_id)
+        except Status.DoesNotExist:
+            raise Http404("selected movie {} is not tracked".format(next_id))
 
     def search_next_song(self, context, page=1):
         pos = self.get_nextpos(context)
@@ -63,6 +69,8 @@ class PlayerMixIn(BaseMapSearchMixIn):
                 'version': VERSION,
                 'not_analyzed': False,
                 'sortby': 'distance',
+                'time_factor': context['time_factor'],
+                'score_factor': context['score_factor'],
             }
         )[(page-1)*5:page*5]
 
@@ -94,8 +102,6 @@ class PlayerMixIn(BaseMapSearchMixIn):
         return previous_position + POSITION_STEP * np.random.normal(1, 0.25) * vec
 
     def is_playable(self, mvid, context):
-        tree = {}
-
         if mvid in context['played']:
             return False
 
@@ -103,14 +109,17 @@ class PlayerMixIn(BaseMapSearchMixIn):
         with urlopen(req) as response:
             root = ElementTree.fromstring(response.read())
 
-        if root.get('status') == 'ok':
-            for child in root[0]:
-                if child.tag == 'tags':
-                    tree['tags'] = set(x.text for x in child)
-        else:
+        if not root.get('status') == 'ok':
             return False
 
-        if not tree['tags'].isdisjoint( TAG_BLACKLIST ):
+        if root.find('../.embeddable') == 0:
+            return False
+
+        tags = set(x.text for x in root.findall('.//tag'))
+
+        if not tags.isdisjoint( TAG_BLACKLIST ):
+            return False
+        if 'VOCALOID' not in tags:
             return False
 
         return True

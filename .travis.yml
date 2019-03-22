@@ -5,7 +5,10 @@ python:
   - "3.6"
 
 install:
+  - sudo apt-get -y install libsqlite3-dev gcc
   - pip install -r dependencies.dat
+  - wget 'https://www.sqlite.org/contrib/download/?get=25' -O extension-functions.c
+  - gcc -fPIC -shared extension-functions.c -o libsqlitefunctions.so -lm
 
 script:
   - pytest

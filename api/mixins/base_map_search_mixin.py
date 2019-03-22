@@ -12,10 +12,24 @@ class BaseMapSearchMixIn(StatusSearchMixIn):
         else:
             context['version'] = settings.LATEST_ANALYZER_MODEL_VERSION
 
+        if get_request('score_factor') not in ['', None]:
+            context['score_factor'] = float(get_request('score_factor')) / 10
+        elif 'score_factor' in request.session.keys():
+            context['score_factor'] = request.session['score_factor'] / 10
+        else:
+            context['score_factor'] = float(0)
+
+        if get_request('time_factor') not in ['', None]:
+            context['time_factor'] = float(get_request('time_factor')) / 10
+        elif 'time_factor' in request.session.keys():
+            context['time_factor'] = request.session['time_factor'] / 10
+        else:
+            context['time_factor'] = float(0)
+
         return context
 
     def _get_queryset(self, objects, context):
         objects = objects.filter(
             songindex__version=context["version"]
         )
-        return super()._get_queryset(objects, context).prefetch_related('chart_set', 'songindex_set')
+        return super()._get_queryset(objects, context).prefetch_related('songindex_set')

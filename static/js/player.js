@@ -2,14 +2,40 @@ var initial = true
 var played = []
 var positions = []
 
+const SCORE_HIGH = 5
+const SCORE_LOW = -5
+const TIME_RECENT = 5
+
 function getNextMovie(){
-    axios
-    .get(initial && initial_mvid
-        ? '/api/player?origin_id='+initial_mvid
-        : '/api/player')
+    var params = {
+        time_factor: time_factor,
+        score_factor: score_factor,
+    }
+    if (initial) {
+        params.origin_id = initial_mvid;
+    }
+    return axios
+    .get('/api/player/', {params: params})
     .then( response => ( response.data.results[0].id ) )
     .then( mvid => ( app.mvid = mvid ) )
-    .catch( error => ( console.log(error) ) )
+    .catch( error => function(){ console.log(error); app.broken = true; } )
+}
+
+function getSettings(){
+    return axios
+    .get('/api/settings')
+    .then( response => ( app.settings = response.data ) )
+    .then( function(){
+        if (app.settings.time_factor == null || app.settings.score_factor == null){
+            app.settings_show();
+        }else{
+            time_symbol = app.settings.time_factor >= TIME_RECENT ?  '0' : '1';
+            score_symbol = app.settings.score_factor >= SCORE_HIGH ?  '2' : (
+                app.settings.time_factor <= SCORE_LOW ? '0' : '1'
+            );
+            document.forms.settingsForm.elements.search_factor.value = time_symbol + score_symbol;
+        }
+    })
 }
 
 function moveMovie(e) {
@@ -67,20 +93,34 @@ Vue.component('niconico-player', {
     template: '<iframe class="embed-responsive-item" frameborder="no" scrolling="no" allow="fullscreen" id="player"></iframe>'
 })
 
-const r = new RegExp("[?&]origin_id=(([^&#]*)|&|#|$)").exec( location.search )
+Vue.component('not-embeddable', {
+    template: '<p class="my-auto">この動画はUTAKO TUNEでは対応していません。<br />考えられる理由: UTAKO TUNEで追跡していない、埋め込みが許可されていないなど</p>'
+})
+
+var r
+
+r = new RegExp("[?&]origin_id=(([^&#]*)|&|#|$)").exec( location.search )
 const initial_mvid = r ? (r[2] ? r[2] : null) : null
+
+r = new RegExp("[?&]time_factor=(([^&#]*)|&|#|$)").exec( location.search )
+const time_factor = r ? (r[2] ? r[2] : null) : null
+
+r = new RegExp("[?&]score_factor=(([^&#]*)|&|#|$)").exec( location.search )
+const score_factor = r ? (r[2] ? r[2] : null) : null
 
 const app = new Vue({
     el: '#vuePlayer',
     data:{
         mvid: null,
         playing: false,
+        broken: false,
+        showModal: false,
     },
     created: function(){
-        getNextMovie();
+        getSettings().then(getNextMovie())
     },
     computed:{
-        playerComponent: function(){ return this.mvid ? 'niconico-player' : 'player-loading' },
+        playerComponent: function(){ return this.broken ? 'not-embeddable' : ( this.mvid ? 'niconico-player' : 'player-loading' ) },
         url: function(){ return 'https://embed.nicovideo.jp/watch/' + this.mvid + '?jsapi=1' },
         tweetUri: function(){
             return "https://twitter.com/intent/tweet?text="
@@ -114,5 +154,30 @@ const app = new Vue({
                 }, origin
             );
         },
+        settings_show: () => ($('#settingsModal').modal('show')),
+        settings_hide: () => ($('#settingsModal').modal('hide')),
     },
 });
+
+function submit_settings(){
+    var search_factor = document.forms.settingsForm.elements.search_factor.value;
+    var time_factor
+    var score_factor
+
+    if(search_factor[0] == '0'){
+        time_factor = TIME_RECENT
+    }else{
+        time_factor = 0
+    }
+
+    if(search_factor[1] == '0'){
+        score_factor = SCORE_LOW
+    }else if(search_factor[1] == '2'){
+        score_factor = SCORE_HIGH
+    }else{
+        score_factor = 0
+    }
+
+    axios.patch('/api/settings/', {score_factor: score_factor, time_factor: time_factor})
+    app.settings_hide()
+}

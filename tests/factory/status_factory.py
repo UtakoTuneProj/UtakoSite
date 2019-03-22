@@ -1,5 +1,7 @@
 import factory
 import faker
+import math
+
 from movie.models import Status
 from datetime import timedelta, datetime
 from . import ChartFactory, IdtagFactory, SongIndexFactory
@@ -47,3 +49,7 @@ class StatusFactory(factory.django.DjangoModelFactory):
     def indexes(obj, create, extracted, **kwargs):
         if kwargs.get('analyze', True):
             SongIndexFactory(status=obj)
+
+    @factory.post_generation
+    def scores(obj, create, extracted, **kwargs):
+        obj.score = 0

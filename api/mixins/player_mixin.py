@@ -27,6 +27,7 @@ TAG_BLACKLIST = {
     'クロスフェードデモ',
     'VOCALOID-CDデモ',
     '例のアレ',
+    '紳士向け'
 }
 POSITION_STEP = 0.1
 VERSION = settings.LATEST_ANALYZER_MODEL_VERSION

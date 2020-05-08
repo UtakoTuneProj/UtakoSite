@@ -8,5 +8,5 @@ COPY  ./ /UtakoSite/
 
 ENV TZ='Asia/Tokyo'
 WORKDIR /UtakoSite
-ENTRYPOINT ['gunicorn']
+ENTRYPOINT ['/usr/local/bin/gunicorn']
 CMD ['UtakoSite.wsgi', '--bind', ':8193']

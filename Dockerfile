@@ -5,3 +5,8 @@ COPY ./dependencies.dat /
 RUN pip3 install -U pip &&\
     pip install -r /dependencies.dat
 COPY  ./ /UtakoSite/
+
+ENV TZ="Asia/Tokyo"
+WORKDIR /UtakoSite
+ENTRYPOINT ["/usr/local/bin/gunicorn"]
+CMD ["UtakoSite.wsgi", "--bind", ":8193"]

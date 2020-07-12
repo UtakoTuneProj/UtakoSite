@@ -1,0 +1,75 @@
+substitutions:
+  _DOCKER_TAG: 'asia.gcr.io/${PROJECT_ID}/utako-frontend-v1-${BRANCH_NAME}'
+
+steps:
+
+# download secrets from Gcloud Secrets Manager
+# To update secrets: https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets?hl=ja
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - 'gcloud secrets versions access latest --secret=utako-frontend-v1-develop-secret > UtakoSite/secrets.py'
+
+# build container
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args: [
+    'build',
+    '-t', '${_DOCKER_TAG}:latest',
+    '-t', '${_DOCKER_TAG}:${SHORT_SHA}',
+    '--cache-from', '${_DOCKER_TAG}:latest',
+    '-f', 'Dockerfile', '.'
+  ]
+
+# push container
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'push',
+    '${_DOCKER_TAG}:latest'
+  ]
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'push',
+    '${_DOCKER_TAG}:${SHORT_SHA}'
+  ]
+
+# deploy to cloud run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args:
+    - 'gcloud'
+    - 'run'
+    - 'deploy'
+    - 'utako-frontend-edge'
+    - '--image'
+    - '${_DOCKER_TAG}:${SHORT_SHA}'
+    - '--platform'
+    - 'managed'
+    - '--region'
+    - 'asia-northeast1'
+    - '--allow-unauthenticated'
+
+# migrate db
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'run',
+    '${_DOCKER_TAG}:latest',
+    'python3',
+    '/UtakoSite/manage.py',
+    'migrate'
+  ]
+
+# build static
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'run',
+    '${_DOCKER_TAG}:latest',
+    'python3',
+    '/UtakoSite/manage.py',
+    'collectstatic'
+  ]
+
+artifacts:
+  objects:
+    location: 'gs://statics.edge.utako-tune.jp/static'
+    paths: ['collect_static']

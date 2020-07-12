@@ -1,4 +1,4 @@
-FROM python:3.5-jessie
+FROM python:3.6-buster
 LABEL MAINTAINER="nanamachi<7machi@nanamachi.net>"
 
 RUN mkdir /UtakoSite

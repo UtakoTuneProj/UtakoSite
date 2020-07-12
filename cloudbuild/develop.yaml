@@ -1,16 +1,15 @@
 substitutions:
   _DOCKER_TAG: 'asia.gcr.io/${PROJECT_ID}/utako-frontend-v1-${BRANCH_NAME}'
   _PYTHON_IMAGE: 'python:3.6-buster'
-  _MODULES_VOLUME: 'pipenv_modules'
   _MODULES_DIR: '/pipenv_modules'
 
 options:
   volumes:
-  - name: '${_MODULES_VOLUME}'
-    path: '${_MODULES_DIR}'
+  - name: 'pipenv_modules'
+    path: '/pipenv_modules'
   env:
-    - 'PYTHONPATH=${_MODULES_DIR}:$$PYTHONPATH'
-    - 'PIPENV_CACHE_DIR=${_MODULES_DIR}'
+    - 'PYTHONPATH=/pipenv_modules:$$PYTHONPATH'
+    - 'PIPENV_CACHE_DIR=/pipenv_modules'
 
 steps:
 

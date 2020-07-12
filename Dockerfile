@@ -5,7 +5,7 @@ RUN mkdir /UtakoSite
 WORKDIR /UtakoSite
 
 RUN pip3 install pipenv
-COPY ./Pipenv ./Pipenv.lock /UtakoSite/
+COPY ./Pipfile ./Pipfile.lock /UtakoSite/
 RUN pipenv install --system --deploy
 
 COPY  ./ /UtakoSite/

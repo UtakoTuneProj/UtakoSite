@@ -13,7 +13,6 @@ steps:
 
 # build container
 - name: 'gcr.io/cloud-builders/docker'
-  entrypoint: 'bash'
   args: [
     'build',
     '-t', '${_DOCKER_TAG}:latest',

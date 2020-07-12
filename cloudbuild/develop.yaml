@@ -66,20 +66,10 @@ steps:
     '--deploy'
   ]
 
-# migrate db
-- name: '${_PYTHON_IMAGE}'
-  waitFor: ['installDependencies', 'pushImage']
-  args: [
-    'python3',
-    '-m', 'pipenv',
-    'run',
-    './manage.py',
-    'migrate'
-  ]
-
 # build static
 - name: '${_PYTHON_IMAGE}'
-  waitFor: ['installDependencies', 'pushImage']
+  id: 'collectStatic'
+  waitFor: ['installDependencies']
   args: [
     'python3',
     '-m', 'pipenv',
@@ -88,9 +78,31 @@ steps:
     'collectstatic'
   ]
 
+# migrate db
+- name: '${_PYTHON_IMAGE}'
+  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
+  args: [
+    'python3',
+    '-m', 'pipenv',
+    'run',
+    './manage.py',
+    'migrate'
+  ]
+
+# deploy static files
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
+  args:
+    - 'gsutil'
+    - 'rsync'
+    - '-R'
+    - 'collect_static/'
+    - 'gs://statics.edge.utako-tune.jp/static'
+
+
 # deploy to cloud run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  waitFor: ['installDependencies', 'pushImage']
+  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
   args:
     - 'gcloud'
     - 'run'
@@ -103,8 +115,3 @@ steps:
     - '--region'
     - 'asia-northeast1'
     - '--allow-unauthenticated'
-
-artifacts:
-  objects:
-    location: 'gs://statics.edge.utako-tune.jp/static'
-    paths: ['collect_static']

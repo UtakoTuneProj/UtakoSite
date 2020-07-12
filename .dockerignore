@@ -2,3 +2,4 @@
 collect_static/
 static/
 tests/
+cloudbuild/

@@ -1,5 +1,6 @@
 substitutions:
   _DOCKER_TAG: 'asia.gcr.io/${PROJECT_ID}/utako-frontend-v1-${BRANCH_NAME}'
+  _PYTHON_IMAGE: 'python:3.6-buster'
 
 steps:
 
@@ -49,21 +50,15 @@ steps:
     - '--allow-unauthenticated'
 
 # migrate db
-- name: 'gcr.io/cloud-builders/docker'
+- name: '${_PYTHON_IMAGE}'
   args: [
-    'run',
-    '${_DOCKER_TAG}:latest',
-    'python3',
     '/UtakoSite/manage.py',
     'migrate'
   ]
 
 # build static
-- name: 'gcr.io/cloud-builders/docker'
+- name: '${_PYTHON_IMAGE}'
   args: [
-    'run',
-    '${_DOCKER_TAG}:latest',
-    'python3',
     '/UtakoSite/manage.py',
     'collectstatic'
   ]

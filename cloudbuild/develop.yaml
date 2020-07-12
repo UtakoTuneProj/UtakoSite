@@ -34,6 +34,37 @@ steps:
     '${_DOCKER_TAG}:${SHORT_SHA}'
   ]
 
+# install dependencies for migrate, static
+- name: '${_PYTHON_IMAGE}'
+  args: [
+    'python3',
+    '-m', 'pip',
+    'install',
+    'pipenv'
+  ]
+- name: '${_PYTHON_IMAGE}'
+  args: [
+    'pipenv',
+    'install',
+    '--deploy', '--system'
+  ]
+
+# migrate db
+- name: '${_PYTHON_IMAGE}'
+  args: [
+    'python3',
+    'manage.py',
+    'migrate'
+  ]
+
+# build static
+- name: '${_PYTHON_IMAGE}'
+  args: [
+    'python3',
+    'manage.py',
+    'collectstatic'
+  ]
+
 # deploy to cloud run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   args:
@@ -48,20 +79,6 @@ steps:
     - '--region'
     - 'asia-northeast1'
     - '--allow-unauthenticated'
-
-# migrate db
-- name: '${_PYTHON_IMAGE}'
-  args: [
-    '/UtakoSite/manage.py',
-    'migrate'
-  ]
-
-# build static
-- name: '${_PYTHON_IMAGE}'
-  args: [
-    '/UtakoSite/manage.py',
-    'collectstatic'
-  ]
 
 artifacts:
   objects:

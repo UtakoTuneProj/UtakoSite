@@ -1,4 +1,4 @@
-dist: xenial
+dist: focal
 language: python
 python:
   - "3.5"
@@ -6,7 +6,8 @@ python:
 
 install:
   - sudo apt-get -y install libsqlite3-dev gcc
-  - pip install -r dependencies.dat
+  - pip install pipenv
+  - pipenv install --dev --deploy --system
   - wget 'https://www.sqlite.org/contrib/download/?get=25' -O extension-functions.c
   - gcc -fPIC -shared extension-functions.c -o libsqlitefunctions.so -lm
 

@@ -1,6 +1,16 @@
 substitutions:
   _DOCKER_TAG: 'asia.gcr.io/${PROJECT_ID}/utako-frontend-v1-${BRANCH_NAME}'
   _PYTHON_IMAGE: 'python:3.6-buster'
+  _MODULES_VOLUME: 'pipenv_modules'
+  _MODULES_DIR: '/pipenv_modules'
+
+options:
+  volumes:
+  - name: '${_MODULES_VOLUME}'
+    path: '${_MODULES_DIR}'
+  env:
+    - 'PYTHONPATH=${_MODULES_DIR}:$$PYTHONPATH'
+    - 'PIPENV_CACHE_DIR=${_MODULES_DIR}'
 
 steps:
 
@@ -44,6 +54,7 @@ steps:
     'python3',
     '-m', 'pip',
     'install',
+    '--target', '${_MODULES_DIR}',
     'pipenv'
   ]
 - name: '${_PYTHON_IMAGE}'
@@ -53,7 +64,7 @@ steps:
     'python3',
     '-m', 'pipenv',
     'install',
-    '--deploy', '--system'
+    '--deploy'
   ]
 
 # migrate db
@@ -61,6 +72,8 @@ steps:
   waitFor: ['installDependencies', 'pushImage']
   args: [
     'python3',
+    '-m', 'pipenv',
+    'run',
     'manage.py',
     'migrate'
   ]
@@ -70,6 +83,8 @@ steps:
   waitFor: ['installDependencies', 'pushImage']
   args: [
     'python3',
+    '-m', 'pipenv',
+    'run',
     'manage.py',
     'collectstatic'
   ]

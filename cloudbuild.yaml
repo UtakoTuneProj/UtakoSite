@@ -1,0 +1,117 @@
+substitutions:
+  _DOCKER_TAG: 'asia.gcr.io/${PROJECT_ID}/utako-frontend-v1-${BRANCH_NAME}'
+  _PYTHON_IMAGE: 'python:3.6-buster'
+  _MODULES_DIR: '/pipenv_modules'
+
+options:
+  volumes:
+  - name: 'pipenv_modules'
+    path: '/pipenv_modules'
+  env:
+    - 'PYTHONPATH=/pipenv_modules:$$PYTHONPATH'
+    - 'PIPENV_CACHE_DIR=/pipenv_modules'
+
+steps:
+
+# download secrets from Gcloud Secrets Manager
+# To update secrets: https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets?hl=ja
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'fetchSecrets'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - 'gcloud secrets versions access latest --secret=utako-frontend-v1-${_ENVIRONMENT}-secret > UtakoSite/secrets.py'
+
+# build container
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t', '${_DOCKER_TAG}:latest',
+    '-t', '${_DOCKER_TAG}:${SHORT_SHA}',
+    '--cache-from', '${_DOCKER_TAG}:latest',
+    '-f', 'Dockerfile', '.'
+  ]
+
+# push container
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'pushImage'
+  args: [
+    'push',
+    '${_DOCKER_TAG}:${SHORT_SHA}'
+  ]
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'push',
+    '${_DOCKER_TAG}:latest'
+  ]
+
+# install dependencies for migrate, static
+- name: '${_PYTHON_IMAGE}'
+  id: 'installPipenv'
+  waitFor: ['fetchSecrets']
+  args: [
+    'python3',
+    '-m', 'pip',
+    'install',
+    '--target', '${_MODULES_DIR}',
+    'pipenv'
+  ]
+- name: '${_PYTHON_IMAGE}'
+  id: 'installDependencies'
+  waitFor: ['installPipenv']
+  args: [
+    'python3',
+    '-m', 'pipenv',
+    'install',
+    '--deploy'
+  ]
+
+# build static
+- name: '${_PYTHON_IMAGE}'
+  id: 'collectStatic'
+  waitFor: ['installDependencies']
+  args: [
+    'python3',
+    '-m', 'pipenv',
+    'run',
+    './manage.py',
+    'collectstatic'
+  ]
+
+# migrate db
+- name: '${_PYTHON_IMAGE}'
+  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
+  args: [
+    'python3',
+    '-m', 'pipenv',
+    'run',
+    './manage.py',
+    'migrate'
+  ]
+
+# deploy static files
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
+  args:
+    - 'gsutil'
+    - 'rsync'
+    - '-R'
+    - 'collect_static/'
+    - 'gs://${_STATIC_BUCKET}/static'
+
+
+# deploy to cloud run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
+  args:
+    - 'gcloud'
+    - 'run'
+    - 'deploy'
+    - '${_CLOUDRUN_NAME}'
+    - '--image'
+    - '${_DOCKER_TAG}:${SHORT_SHA}'
+    - '--platform'
+    - 'managed'
+    - '--region'
+    - 'asia-northeast1'
+    - '--allow-unauthenticated'

@@ -1,12 +1,15 @@
-FROM python:3.5-jessie
-MAINTAINER nanamachi
+FROM python:3.6-buster
+LABEL MAINTAINER="nanamachi<7machi@nanamachi.net>"
 
-COPY ./dependencies.dat /
-RUN pip3 install -U pip &&\
-    pip install -r /dependencies.dat
+RUN mkdir /UtakoSite
+WORKDIR /UtakoSite
+
+RUN pip3 install pipenv
+COPY ./Pipfile ./Pipfile.lock /UtakoSite/
+RUN pipenv install --system --deploy
+
 COPY  ./ /UtakoSite/
 
-ENV TZ="Asia/Tokyo"
-WORKDIR /UtakoSite
-ENTRYPOINT ["/usr/local/bin/gunicorn"]
+ENTRYPOINT ["gunicorn"]
 CMD ["UtakoSite.wsgi", "--bind", ":8193"]
+ENV TZ="Asia/Tokyo"

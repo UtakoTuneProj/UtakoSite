@@ -9,7 +9,7 @@ pytest-django = "*"
 factory_boy = "*"
 
 [packages]
-django = "==2.2"
+django = "~=2.2"
 mysqlclient = "*"
 gunicorn = "*"
 social-auth-app-django = "*"

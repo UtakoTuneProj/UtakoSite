@@ -1,6 +1,6 @@
 substitutions:
   _DOCKER_TAG: 'asia.gcr.io/${PROJECT_ID}/utako-frontend-v1-${BRANCH_NAME}'
-  _PYTHON_IMAGE: 'python:3.6-buster'
+  _PYTHON_IMAGE: 'python:3.6-alpine'
   _MODULES_DIR: '/pipenv_modules'
 
 options:

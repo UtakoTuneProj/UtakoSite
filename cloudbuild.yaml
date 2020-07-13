@@ -20,7 +20,7 @@ steps:
   entrypoint: 'bash'
   args:
     - '-c'
-    - 'gcloud secrets versions access latest --secret=utako-frontend-v1-develop-secret > UtakoSite/secrets.py'
+    - 'gcloud secrets versions access latest --secret=utako-frontend-v1-${_ENVIRONMENT}-secret > UtakoSite/secrets.py'
 
 # build container
 - name: 'gcr.io/cloud-builders/docker'
@@ -97,7 +97,7 @@ steps:
     - 'rsync'
     - '-R'
     - 'collect_static/'
-    - 'gs://statics.edge.utako-tune.jp/static'
+    - 'gs://${_STATIC_BUCKET}/static'
 
 
 # deploy to cloud run
@@ -107,7 +107,7 @@ steps:
     - 'gcloud'
     - 'run'
     - 'deploy'
-    - 'utako-frontend-edge'
+    - '${_CLOUDRUN_NAME}'
     - '--image'
     - '${_DOCKER_TAG}:${SHORT_SHA}'
     - '--platform'

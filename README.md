@@ -1,3 +1,5 @@
+[![Travis CI Status](https://travis-ci.com/UtakoTuneProj/UtakoSite.svg?branch=develop)](https://travis-ci.com/UtakoTuneProj/UtakoSite)
+
 # UtakoSite(うたこフロントエンド)
 VOCALOID楽曲視聴支援サービス"UTAKO TUNE"のフロントエンド
 

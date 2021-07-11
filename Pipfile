@@ -3,6 +3,13 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
+[scripts]
+serve = "gunicorn --reload UtakoSite.wsgi"
+pull-devel-secrets = "bash -c 'gcloud secrets versions access latest --secret=${SECRET_NAME_DEVELOP} > UtakoSite/secrets.develop.py'"
+pull-prod-secrets = "bash -c 'gcloud secrets versions access latest --secret=${SECRET_NAME_PRODUCTION} > UtakoSite/secrets.production.py'"
+push-devel-secrets = "bash -c 'gcloud secrets versions add ${SECRET_NAME_DEVELOP} --data-file=UtakoSite/secrets.develop.py'"
+push-prod-secrets = "bash -c 'gcloud secrets versions add ${SECRET_NAME_PRODUCTION} --data-file=UtakoSite/secrets.production.py'"
+
 [dev-packages]
 pytest = "*"
 pytest-django = "*"
@@ -20,4 +27,4 @@ markdown = "*"
 numpy = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"

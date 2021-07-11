@@ -7,3 +7,4 @@ collect_static
 .coverage
 extension-functions.c
 libsqlitefunctions.so
+.env

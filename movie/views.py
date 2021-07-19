@@ -27,7 +27,7 @@ MINIMUM_KWARGS = {
     '_sort'
 }
 
-NICOAPI_BASE = "https://api.search.nicovideo.jp/api/v2/video/contents/search?"
+NICOAPI_BASE = "https://api.search.nicovideo.jp/api/v2/snapshot/video/contents/search?"
 
 def parse_nicoapi(movie_id):
     def no_response():

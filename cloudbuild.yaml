@@ -81,7 +81,8 @@ steps:
 
 # migrate db
 - name: '${_DOCKER_TAG}:${SHORT_SHA}'
-  waitFor: ['collectStatic', 'pushImage']
+  id: 'migrateDB'
+  waitFor: ['buildImage']
   args: [
     'python3',
     '-m', 'pipenv',
@@ -92,7 +93,8 @@ steps:
 
 # deploy static files
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
+  id: 'deployStatic'
+  waitFor: ['collectStatic']
   args:
     - 'gsutil'
     - 'rsync'
@@ -103,7 +105,7 @@ steps:
 
 # deploy to cloud run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
+  waitFor: ['migrateDB', 'deployStatic', 'pushImage']
   args:
     - 'gcloud'
     - 'run'

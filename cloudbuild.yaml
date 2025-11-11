@@ -24,6 +24,7 @@ steps:
 
 # build container
 - name: 'gcr.io/cloud-builders/docker'
+  id: 'buildImage'
   args: [
     'build',
     '-t', '${_DOCKER_TAG}:latest',
@@ -45,31 +46,31 @@ steps:
     '${_DOCKER_TAG}:latest'
   ]
 
-# install dependencies for migrate, static
-- name: '${_PYTHON_IMAGE}'
-  id: 'installPipenv'
-  waitFor: ['fetchSecrets']
-  args: [
-    'python3',
-    '-m', 'pip',
-    'install',
-    '--target', '${_MODULES_DIR}',
-    'pipenv'
-  ]
-- name: '${_PYTHON_IMAGE}'
-  id: 'installDependencies'
-  waitFor: ['installPipenv']
-  args: [
-    'python3',
-    '-m', 'pipenv',
-    'install',
-    '--deploy'
-  ]
+# # install dependencies for migrate, static
+# - name: '${_PYTHON_IMAGE}'
+#   id: 'installPipenv'
+#   waitFor: ['fetchSecrets']
+#   args: [
+#     'python3',
+#     '-m', 'pip',
+#     'install',
+#     '--target', '${_MODULES_DIR}',
+#     'pipenv'
+#   ]
+# - name: '${_PYTHON_IMAGE}'
+#   id: 'installDependencies'
+#   waitFor: ['installPipenv']
+#   args: [
+#     'python3',
+#     '-m', 'pipenv',
+#     'install',
+#     '--deploy'
+#   ]
 
 # build static
-- name: '${_PYTHON_IMAGE}'
+- name: '${_DOCKER_TAG}:${SHORT_SHA}'
   id: 'collectStatic'
-  waitFor: ['installDependencies']
+  waitFor: ['buildImage']
   args: [
     'python3',
     '-m', 'pipenv',
@@ -79,8 +80,8 @@ steps:
   ]
 
 # migrate db
-- name: '${_PYTHON_IMAGE}'
-  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
+- name: '${_DOCKER_TAG}:${SHORT_SHA}'
+  waitFor: ['collectStatic', 'pushImage']
   args: [
     'python3',
     '-m', 'pipenv',

@@ -72,6 +72,9 @@ steps:
   id: 'collectStatic'
   waitFor: ['buildImage']
   args: [
+    'python3',
+    '-m', 'pipenv',
+    'run',
     './manage.py',
     'collectstatic'
   ]
@@ -81,6 +84,9 @@ steps:
   id: 'migrateDB'
   waitFor: ['buildImage']
   args: [
+    'python3',
+    '-m', 'pipenv',
+    'run',
     './manage.py',
     'migrate'
   ]

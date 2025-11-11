@@ -10,6 +10,6 @@ RUN pipenv install --system --deploy
 
 COPY  ./ /UtakoSite/
 
-ENTRYPOINT ["python3", "-m" , "pipenv", "run"]
-CMD ["gunicorn", "UtakoSite.wsgi", "--bind", ":8193"]
+ENTRYPOINT ["gunicorn"]
+CMD ["UtakoSite.wsgi", "--bind", ":8193"]
 ENV TZ="Asia/Tokyo"

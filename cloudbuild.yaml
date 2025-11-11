@@ -6,11 +6,10 @@ substitutions:
 options:
   volumes:
   - name: 'pipenv_modules'
-    path: '${_MODULES_DIR}'
+    path: '/pipenv_modules'
   env:
-    - 'PYTHONPATH=${_MODULES_DIR}:$$PYTHONPATH'
-    - 'PIPENV_CACHE_DIR=${_MODULES_DIR}'
-    - 'PIPENV_VENV_IN_PROJECT=1'
+    - 'PYTHONPATH=/pipenv_modules:$$PYTHONPATH'
+    - 'PIPENV_CACHE_DIR=/pipenv_modules'
 
 steps:
 

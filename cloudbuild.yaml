@@ -10,6 +10,7 @@ options:
   env:
     - 'PYTHONPATH=/pipenv_modules:$$PYTHONPATH'
     - 'PIPENV_CACHE_DIR=/pipenv_modules'
+    - 'PIPENV_VENV_IN_PROJECT=1'
 
 steps:
 

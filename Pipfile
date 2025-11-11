@@ -26,6 +26,7 @@ django-filter = "*"
 markdown = "*"
 numpy = "*"
 django-debug-toolbar = "*"
+setuptools = "*"
 
 [requires]
 python_version = "3.12"

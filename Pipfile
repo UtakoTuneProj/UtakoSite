@@ -16,7 +16,7 @@ pytest-django = "*"
 factory_boy = "*"
 
 [packages]
-django = "~=2.2"
+django = "~=2.0"
 mysqlclient = "*"
 gunicorn = "*"
 social-auth-app-django = "*"
@@ -25,6 +25,7 @@ djangorestframework = "*"
 django-filter = "*"
 markdown = "*"
 numpy = "*"
+django-debug-toolbar = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.12"

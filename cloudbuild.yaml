@@ -1,6 +1,7 @@
 substitutions:
   _DOCKER_TAG: 'asia.gcr.io/${PROJECT_ID}/utako-frontend-v1-${BRANCH_NAME}'
   _PYTHON_IMAGE: 'python:3.12-trixie'
+  _MODULES_DIR: '/pipenv_modules'
 
 # options:
 #   volumes:
@@ -52,6 +53,7 @@ steps:
     'python3',
     '-m', 'pip',
     'install',
+    '--target', '${_MODULES_DIR}',
     'pipenv'
   ]
 - name: '${_PYTHON_IMAGE}'

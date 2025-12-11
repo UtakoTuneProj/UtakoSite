@@ -79,16 +79,16 @@ steps:
     'collectstatic'
   ]
 
-# migrate db
-- name: '${_PYTHON_IMAGE}'
-  waitFor: ['installDependencies', 'collectStatic', 'pushImage']
-  args: [
-    'python3',
-    '-m', 'pipenv',
-    'run',
-    './manage.py',
-    'migrate'
-  ]
+# migration should be performed manually
+# - name: '${_PYTHON_IMAGE}'
+#   waitFor: ['installDependencies', 'collectStatic', 'pushImage']
+#   args: [
+#     'python3',
+#     '-m', 'pipenv',
+#     'run',
+#     './manage.py',
+#     'migrate'
+#   ]
 
 # deploy static files
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
